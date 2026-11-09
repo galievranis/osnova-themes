@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[PD] Палитра классической темы — vc.ru</title>
+  <link rel="stylesheet" href="palette.css">
+  <script defer src="palette.js"></script>
+</head>
+<body>
+  <header>
+    <a href="./">← Редактор тем</a>
+  </header>
+  <main>
+    <h1>Палитра классической темы</h1>
+    <p id="palette-status" role="status">Загрузка палитры…</p>
+    <div id="palette" hidden>
+      <section aria-labelledby="gray-title">
+        <div class="gray-heading">
+          <h2 id="gray-title">Серые оттенки</h2>
+          <label class="gray-layout">
+            <input type="checkbox" id="gray-strip" aria-controls="gray-swatches">
+            Без зазоров
+          </label>
+        </div>
+        <ul class="swatch-grid gray-grid" id="gray-swatches" aria-labelledby="gray-title"></ul>
+      </section>
+      <section aria-labelledby="colors-title">
+        <h2 id="colors-title">Цвета темы</h2>
+        <p class="section-note">Если токен переопределён в тёмной теме, оба значения показаны рядом.</p>
+        <ul class="swatch-grid" id="color-swatches"></ul>
+      </section>
+      <section aria-labelledby="gradients-title">
+        <h2 id="gradients-title">Градиенты темы</h2>
+        <ul class="swatch-grid" id="gradient-swatches"></ul>
+      </section>
+    </div>
+  </main>
+  <template id="swatch">
+    <li>
+      <code class="swatch-name"></code>
+      <div class="swatch-samples"></div>
+    </li>
+  </template>
+  <template id="swatch-sample">
+    <div class="swatch-sample">
+      <div class="swatch-preview" aria-hidden="true"></div>
+      <div class="swatch-details">
+        <span class="swatch-mode"></span>
+        <code class="swatch-value"></code>
+      </div>
+    </div>
+  </template>
+</body>
+</html>

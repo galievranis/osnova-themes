@@ -1,0 +1,36 @@
+.theme-editor-link{position:fixed;bottom:24px;right:24px;z-index:99999;background:#252629;color:white!important;padding:12px 18px;border-radius:30px;font:14px system-ui;box-shadow:0 4px 20px #0003}img{object-fit:cover}
+/* MHTML serialized logical padding shorthand as empty physical declarations.
+   Restore the original content gutter (SKILL.md §§4.2, 6.3), retaining the
+   existing extra right indent and zero-gutter overrides in summaries. */
+.block-text,
+.block-header,
+.block-list,
+.block-quote,
+.content-repost-label {
+  padding-left: var(--layout-content-offset-x);
+}
+.content__reactions,
+.e5eeaZb1 {
+  padding-left: var(--layout-content-offset-x);
+  padding-right: var(--layout-content-offset-x);
+}
+.skeleton-subsite__padding {
+  padding-left: var(--layout-content-offset-x);
+  padding-right: var(--layout-content-offset-x);
+}
+
+/* Header structure and breakpoints retained from mobile/tablet MHTML. */
+:root { --layout-header-height: 60px !important; }
+.header__distribution { display: none; }
+.account-button .andropov-media img { width:40px; height:40px; object-fit:cover; }
+@media (max-width: 924px) {
+  :root { --layout-header-height:102px !important; --layout-tabbar-height:50px !important; }
+  .header__distribution { display:block; flex:none; height:42px; }
+  .header__distribution .distribution { height:42px; display:flex; align-items:center; }
+  .header__layout { height:60px; }
+  .header__main-distribution, .header__right > * { display:none; }
+}
+@media (min-width:925px) and (max-width:1239px) {
+  .header__write-label { display:none; }
+  .header__right a .button { width:40px; padding:0; gap:0; }
+}

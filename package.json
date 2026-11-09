@@ -1,0 +1,1 @@
+{"name":"osnova-themes","private":true,"scripts":{"dev":"python3 -m http.server 5173 --directory public","build":"python3 scripts/build.py"}}
