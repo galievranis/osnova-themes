@@ -1,0 +1,73 @@
+@charset "utf-8";
+
+@keyframes ygi2iErK { 
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes q9I--Nms { 
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes mWzsiQah { 
+  0% { opacity: 0; transform: translate3d(0px, 100%, 0px); }
+  100% { opacity: 1; transform: translateZ(0px); }
+}
+
+.WKCiWGz1 a { color: var(--theme-color-signal-active-default); cursor: pointer; }
+
+@media (hover: hover) {
+  .WKCiWGz1 a:hover { color: var(--theme-color-signal-active-dark); }
+}
+
+.Z6beSxVP { height: 26px; align-items: center; }
+
+.lwBy3MUw { display: grid; gap: 4px; margin-top: 10px; }
+
+.RCsTAAcm { display: flex; align-items: flex-start; gap: 12px; min-height: 38px; padding: 4px 0px; }
+
+.mJuSLyvC { font-size: 15px; line-height: 22px; color: var(--theme-color-signal-active-default); cursor: pointer; }
+
+@media (hover: hover) {
+  .mJuSLyvC:hover { color: var(--theme-color-signal-active-dark); }
+}
+
+.mJuSLyvC { flex: 1 1 0%; align-self: center; min-width: 0px; overflow-wrap: break-word; }
+
+@media (hover: hover) {
+  .B-apHNYu:hover:not([disabled]) { color: var(--theme-color-signal-active-default); background: var(--theme-color-content-footer-button-hover-background); }
+}
+
+.C6SXe95c { display: flex; align-items: center; height: 26px; margin-top: 12px; }
+
+:root { --safe-tabbar-height: calc(var(--layout-tabbar-height) + env(safe-area-inset-bottom)); --floating-glass-backdrop-filter: blur(17px); }
+
+:root[data-effects="reduced"] { --floating-glass-backdrop-filter: none; --underlay-backdrop-filter: none; --theme-color-floating-glass: var(--theme-color-background-content); }
+
+@keyframes fopvfZVT { 
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes U7gPJsFY { 
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes lq7sk8g7 { 
+  0% { opacity: 0; transform: translate3d(0px, 100%, 0px); }
+  100% { opacity: 1; transform: translateZ(0px); }
+}
+
+._3jhdW-lG { font-size: 17px; line-height: 26px; max-width: 433px; }
+
+._3jhdW-lG a { color: var(--theme-color-signal-active-default); cursor: pointer; }
+
+@media (hover: hover) {
+  ._3jhdW-lG a:hover { color: var(--theme-color-signal-active-dark); }
+}
+
+.DKwjU9-G { margin-top: 6px; }
+
+._4tv4v3Mt { margin-top: 14px; }

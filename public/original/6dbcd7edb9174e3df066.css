@@ -1,0 +1,26 @@
+@charset "utf-8";
+
+:root { --safe-tabbar-height: calc(var(--layout-tabbar-height) + env(safe-area-inset-bottom)); --floating-glass-backdrop-filter: blur(17px); }
+
+:root[data-effects="reduced"] { --floating-glass-backdrop-filter: none; --underlay-backdrop-filter: none; --theme-color-floating-glass: var(--theme-color-background-content); }
+
+@keyframes underlay-in { 
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes modal-enter { 
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes modal-enter-slide { 
+  0% { opacity: 0; transform: translate3d(0px, 100%, 0px); }
+  100% { opacity: 1; transform: translateZ(0px); }
+}
+
+.notifications-settings-checkboxes { display: grid; gap: 8px; }
+
+.notifications-settings-push { display: grid; gap: 16px; justify-items: start; margin-bottom: 16px; }
+
+.notifications-settings-push__status { font-size: 17px; line-height: 26px; color: var(--theme-color-text-primary); }

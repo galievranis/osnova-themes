@@ -1,6 +1,9 @@
 (async()=>{
  const $=s=>document.querySelector(s),params=new URLSearchParams(location.search),mode=params.get('mode')==='dark'?'dark':'light';
- const [defaults,primitives]=await Promise.all([fetch('tokens.json').then(r=>r.json()),fetch('primitives.json').then(r=>r.json())]);
+ const [defaults,classicGrays,contrast]=await Promise.all(
+  ['tokens.json','primitives.json','contrast.json'].map(file=>fetch(file).then(r=>r.json()))
+ );
+ const primitives={...classicGrays,...contrast.primitives,...ThemeSchemes.legacyPrimitives};
  function resolve(value,tokens,seen=new Set()){return String(value??'').replace(/var\(\s*(--[\w-]+)\s*(?:,\s*([^()]*))?\)/g,(_,key,fallback)=>{if(seen.has(key))return fallback||'transparent';return resolve(tokens[key]??primitives[key]??fallback??'transparent',tokens,new Set([...seen,key]))})}
  function paint(key,value,tokens){
   const el=document.createElement('div');el.className='sample';
@@ -22,8 +25,8 @@
  const view=params.get('view'),isCoverage=['used','unused'].includes(view),isAll=view==='all',single=isCoverage||isAll;
  const scheme=state?.schemes?.[mode]?.find(t=>t.id===params.get('id'));
  $('#grid').replaceChildren();if(!scheme){$('#name').textContent='Схема не найдена';$('#description').textContent='Откройте сетку токенов из редактора тем.';$('#count').textContent='—';$('#empty').hidden=true;return}
- $('#name').textContent=scheme.name;document.title='[PD] Изменения: '+scheme.name+' — vc.ru';$('#description').textContent=(mode==='light'?'Светлый режим':'Тёмный режим')+' · относительно исходной классической схемы';
- const baseline=defaults[mode];let changed;
+ $('#name').textContent=scheme.name;document.title='[PD] Изменения: '+scheme.name+' — vc.ru';$('#description').textContent=(mode==='light'?'Светлый режим':'Тёмный режим')+(scheme.base==='contrast'?' · относительно исходной схемы Contrast':' · относительно исходной классической схемы');
+ const baseline=(scheme.base==='contrast'?contrast:defaults)[mode];let changed;
  if(isCoverage){let keys=[];try{keys=JSON.parse(params.get('keys')||'[]')}catch{}changed=Array.isArray(keys)?[...new Set(keys)].filter(k=>Object.hasOwn(scheme.tokens,k)):[];
  const heading=view==='used'?'Найдены на экране':'Не встречаются на экране';$('#eyebrow').textContent=heading;document.title='[PD] '+heading+' — '+scheme.name;$('#count-label').textContent='токенов';$('#description').textContent=(mode==='light'?'Светлый':'Тёмный')+' режим · '+(params.get('screen')||'Страница')+' · '+(params.get('width')||'—')+' px';$('.note').textContent='Состав токенов зафиксирован при открытии сетки для этой страницы и ширины экрана. Значения берутся из выбранной цветовой схемы. Токены найдены по подходящим CSS-правилам отображаемых элементов.';
  }else if(isAll){changed=Object.keys(scheme.tokens);$('#eyebrow').textContent='ВСЕ ТОКЕНЫ ЦВЕТОВОЙ СХЕМЫ';document.title='[PD] Все токены — '+scheme.name;$('#count-label').textContent='токенов';$('#description').textContent=(mode==='light'?'Светлый':'Тёмный')+' режим · все значения выбранной схемы';$('.note').textContent='Цвета показаны на светлом и тёмном фоне: заливка сверху, пример текста снизу. Градиенты, тени, фильтры и прозрачность показаны отдельными примерами.';}else changed=Object.keys(scheme.tokens).filter(k=>scheme.tokens[k].trim()!==(baseline[k]??'').trim());$('#count').textContent=changed.length;

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>[PD] Палитра классической темы — vc.ru</title>
+  <title>[PD] Палитра тем — vc.ru</title>
   <link rel="stylesheet" href="palette.css">
   <script defer src="palette.js"></script>
 </head>
@@ -12,9 +12,16 @@
     <a href="./">← Редактор тем</a>
   </header>
   <main>
-    <h1>Палитра классической темы</h1>
+    <h1>Палитра тем</h1>
     <p id="palette-status" role="status">Загрузка палитры…</p>
     <div id="palette" hidden>
+      <label class="palette-theme">
+        Тема
+        <select id="palette-theme">
+          <option value="classic">Классика</option>
+          <option value="contrast">Contrast</option>
+        </select>
+      </label>
       <section aria-labelledby="gray-title">
         <div class="gray-heading">
           <h2 id="gray-title">Серые оттенки</h2>

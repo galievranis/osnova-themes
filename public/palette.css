@@ -44,6 +44,18 @@ h2 {
   font-size: 18px;
 }
 
+.palette-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.palette-theme select {
+  padding: 5px 8px;
+  font: inherit;
+}
+
 .section-note {
   margin: -4px 0 12px;
   color: #5c6472;

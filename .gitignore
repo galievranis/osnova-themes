@@ -1,3 +1,4 @@
 dist/
+dist-showcase/
 __pycache__/
 .DS_Store

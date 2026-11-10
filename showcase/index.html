@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[PD] Витрина тем — vc.ru</title>
+  <link rel="stylesheet" href="showcase.css">
+  <script defer src="showcase.js"></script>
+</head>
+<body>
+  <header class="toolbar" aria-label="Настройки предпросмотра">
+    <div class="toolbar-fields">
+      <div class="toolbar-field">
+        <span id="theme-label">Тема</span>
+        <details class="theme-picker" id="theme-picker" hidden>
+          <summary class="toolbar-control" aria-labelledby="theme-label theme-name">
+            <span class="theme-swatch" id="theme-swatch" aria-hidden="true"></span>
+            <span class="theme-name" id="theme-name"></span>
+          </summary>
+          <ul class="theme-options" id="theme-options" aria-labelledby="theme-label"></ul>
+        </details>
+      </div>
+      <label class="toolbar-field">
+        <span>Режим</span>
+        <select id="mode" disabled>
+          <option value="light">Светлый</option>
+          <option value="dark">Тёмный</option>
+        </select>
+      </label>
+      <label class="toolbar-field toolbar-screen">
+        <span>Экран</span>
+        <select id="screen" disabled>
+          <option value="feed">Лента</option>
+          <option value="my-feed">Моя лента</option>
+          <option value="blog">Блог</option>
+          <option value="post">Пост</option>
+          <option value="collection">Коллекция</option>
+          <option value="rating">Рейтинг</option>
+          <option value="marketplace">Магазин</option>
+          <option value="popover-profile">Меню профиля</option>
+          <optgroup label="Модальные окна">
+            <option value="modal-achievement">Топ-25 авторов</option>
+            <option value="modal-pro">Подписка Pro</option>
+            <option value="modal-gift-plus">Подарить Plus</option>
+          </optgroup>
+        </select>
+      </label>
+    </div>
+  </header>
+  <p id="status" role="status">Загрузка тем…</p>
+  <iframe id="preview" title="Предпросмотр темы vc.ru" hidden></iframe>
+</body>
+</html>

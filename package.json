@@ -1,1 +1,8 @@
-{"name":"osnova-themes","private":true,"scripts":{"dev":"python3 -m http.server 5173 --directory public","build":"python3 scripts/build.py"}}
+{
+  "name": "osnova-themes",
+  "private": true,
+  "scripts": {
+    "dev": "npm run build && python3 -m http.server 5173 --bind 127.0.0.1 --directory dist",
+    "build": "python3 scripts/build.py"
+  }
+}

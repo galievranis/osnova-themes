@@ -1,31 +1,42 @@
 async function loadPalette() {
-  const [themes, grays] = await Promise.all(
-    ['tokens.json', 'primitives.json'].map(async (file) => {
+  const [classic, classicGrays, contrast] = await Promise.all(
+    ['tokens.json', 'primitives.json', 'contrast.json'].map(async (file) => {
       const response = await fetch(file);
       if (!response.ok) throw new Error(`Не удалось загрузить ${file}`);
       return response.json();
     })
   );
 
+  const picker = document.getElementById('palette-theme');
+  function render() {
+    const isContrast = picker.value === 'contrast';
+    renderPalette(isContrast ? contrast : classic, isContrast ? contrast.primitives : classicGrays);
+  }
+  picker.addEventListener('change', render);
+  render();
+}
+
+function renderPalette(themes, grays) {
   const palette = document.getElementById('palette');
   const template = document.getElementById('swatch');
   const sampleTemplate = document.getElementById('swatch-sample');
   const lightNames = Object.keys(themes.light);
-  for (const [name, value] of Object.entries(grays)) {
-    palette.style.setProperty(name, value);
-  }
-  // The banner component supplies its own gradient geometry.
-  palette.style.setProperty('--rgxy', 'ellipse at center');
   palette.hidden = false;
 
   function tokenStyles(tokens) {
     const scope = document.createElement('div');
     scope.hidden = true;
-    for (const [name, value] of Object.entries(tokens)) {
+    // The banner component supplies its own gradient geometry.
+    scope.style.setProperty('--rgxy', 'ellipse at center');
+    for (const [name, value] of Object.entries({ ...grays, ...tokens })) {
       scope.style.setProperty(name, value);
     }
     palette.append(scope);
-    return getComputedStyle(scope);
+    const styles = getComputedStyle(scope);
+    const values = Object.fromEntries(Object.keys({ ...grays, ...tokens })
+      .map(name => [name, styles.getPropertyValue(name).trim()]));
+    scope.remove();
+    return values;
   }
 
   function appendSample(samples, value, mode) {
@@ -47,8 +58,8 @@ async function loadPalette() {
   for (const [id, names, property] of groups) {
     const cards = document.createDocumentFragment();
     for (const name of names) {
-      const lightValue = light.getPropertyValue(name).trim();
-      const darkValue = dark.getPropertyValue(name).trim();
+      const lightValue = light[name];
+      const darkValue = dark[name];
       const isOverride = themes.dark[name] !== themes.light[name] && CSS.supports(property, darkValue);
       if (!isOverride && !CSS.supports(property, lightValue)) continue;
 
@@ -59,7 +70,7 @@ async function loadPalette() {
       if (isOverride) appendSample(samples, darkValue, 'Тёмная');
       cards.append(card);
     }
-    document.getElementById(id).append(cards);
+    document.getElementById(id).replaceChildren(cards);
   }
 }
 

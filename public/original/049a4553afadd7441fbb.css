@@ -1,0 +1,74 @@
+@charset "utf-8";
+
+:root { --safe-tabbar-height: calc(var(--layout-tabbar-height) + env(safe-area-inset-bottom)); --floating-glass-backdrop-filter: blur(17px); }
+
+:root[data-effects="reduced"] { --floating-glass-backdrop-filter: none; --underlay-backdrop-filter: none; --theme-color-floating-glass: var(--theme-color-background-content); }
+
+@keyframes underlay-in { 
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes modal-enter { 
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes modal-enter-slide { 
+  0% { opacity: 0; transform: translate3d(0px, 100%, 0px); }
+  100% { opacity: 1; transform: translateZ(0px); }
+}
+
+.general-settings { --color-google: rgba(241, 67, 54, 1); --color-apple: var(--color-black); --color-vk: #0077FF; --color-yandex: #FC3F1D; }
+
+.general-settings p > a { color: var(--theme-color-signal-active-default); cursor: pointer; }
+
+@media (hover: hover) {
+  .general-settings p > a:hover { color: var(--theme-color-signal-active-dark); }
+}
+
+.general-settings .form-section__label { margin-bottom: 8px; }
+
+.general-settings__body-text { font-size: 17px; line-height: 26px; max-width: 433px; color: var(--theme-color-text-primary); }
+
+.general-settings__change { margin-top: 6px; }
+
+.general-settings__password-confirmation { margin-top: 12px; }
+
+.general-settings__linked-accounts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+
+.general-settings__account { font-size: 15px; line-height: 22px; max-width: 152px; height: 34px; border-radius: 34px; font-weight: 500; display: inline-flex; align-items: center; padding-left: 10px; padding-right: 10px; }
+
+.general-settings__account .icon { margin-right: 6px; flex-shrink: 0; }
+
+.general-settings__account--google { background: var(--color-google); color: var(--color-white); }
+
+.general-settings__account--apple { background: var(--color-apple); color: var(--color-white); }
+
+.general-settings__account--vk { background: var(--color-vk); color: var(--color-white); }
+
+.general-settings__account--yandex { background: var(--color-yandex); color: var(--color-white); }
+
+.general-settings__unlink-account-btn { color: rgb(255, 255, 255); opacity: 0.5; cursor: pointer; width: 16px; margin-left: 6px; }
+
+@media (hover: hover) {
+  .general-settings__unlink-account-btn:hover { opacity: 1; }
+}
+
+.general-settings__link-account { background: var(--theme-color-button-minimal); color: var(--theme-color-text-primary); cursor: pointer; }
+
+@media (hover: hover) {
+  .general-settings__link-account:hover { background: var(--theme-color-button-minimal-hover); }
+}
+
+.general-settings__linked-account-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.general-settings__delete.link-button { color: var(--theme-color-signal-negative-default); }
+
+.general-settings__terminate-all-sessions { color: var(--theme-color-signal-active-default); cursor: pointer; }
+
+@media (hover: hover) {
+  .general-settings__terminate-all-sessions:hover { color: var(--theme-color-signal-active-dark); }
+}
+
+.general-settings__terminate-all-sessions { margin-bottom: 8px; }

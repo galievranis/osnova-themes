@@ -1,15 +1,26 @@
 (async()=>{
 const $=s=>document.querySelector(s), frame=$('#preview');
-const primitives=await fetch('primitives.json').then(r=>r.json());
-const defaults=await fetch('tokens.json').then(r=>r.json());
+const [classicGrays,defaults,contrast]=await Promise.all(
+ ['primitives.json','tokens.json','contrast.json'].map(file=>fetch(file).then(r=>r.json()))
+);
+const legacyGrays=ThemeSchemes.legacyPrimitives;
+const primitives={...classicGrays,...contrast.primitives,...legacyGrays};
+const baseline=(scheme,mode)=>(scheme.base==='contrast'?contrast:defaults)[mode];
 const read=key=>{try{return JSON.parse(localStorage.getItem(key))}catch{return null}};
-const state=ThemeSchemes.createState(defaults,read('osnova-schemes-v3'),read('osnova-themes-v2'));
+const state=ThemeSchemes.createState(defaults,read('osnova-schemes-v3'),read('osnova-themes-v2'),contrast);
 let mode=state.mode;
 const catalog=()=>state.schemes[mode];
 const current=()=>catalog().find(t=>t.id===state.selected[mode]);
 const status=t=>{const el=$('#status');el.textContent=t;el.hidden=/Сохранено|сохраняются/.test(t)};
 function save(){state.mode=mode;try{localStorage.setItem('osnova-schemes-v3',JSON.stringify(state));status('Сохранено в браузере')}catch{status('Хранилище недоступно — скачайте JSON')}apply()}
-function apply(){try{const d=frame.contentDocument;if(!d?.documentElement)return;d.documentElement.dataset.colorMode=mode;let style=d.getElementById('custom-theme');if(!style){style=d.createElement('style');style.id='custom-theme';d.head.append(style)}style.textContent=':root:root{'+Object.entries(current().tokens).map(([k,v])=>`${k}:${v};`).join('')+'}';scheduleCoverage();dispatchEvent(new CustomEvent('theme-updated',{detail:{name:current().name}}))}catch{}}
+function usedPrimitives(scheme){
+ const values=Object.values(scheme.tokens).join(' ');
+ const refs=new Set(Array.from(values.matchAll(/var\(\s*(--[\w-]+)/g),match=>match[1]));
+ const grays=scheme.base==='contrast'?contrast.primitives:classicGrays;
+ return {...grays,...Object.fromEntries(Object.entries(primitives)
+  .filter(([key])=>refs.has(key)))};
+}
+function apply(){try{const d=frame.contentDocument;if(!d?.documentElement)return;d.documentElement.dataset.colorMode=mode;if(d.documentElement.hasAttribute('data-preview-archive'))d.documentElement.dataset.theme=mode;let style=d.getElementById('custom-theme');if(!style){style=d.createElement('style');style.id='custom-theme';d.head.append(style)}style.textContent=':root:root{'+Object.entries({...usedPrimitives(current()),...current().tokens}).map(([k,v])=>`${k}:${v};`).join('')+'}';scheduleCoverage();dispatchEvent(new CustomEvent('theme-updated',{detail:{name:current().name}}))}catch{}}
 let coverageTimer,coverage={used:[],unused:[]};
 function scheduleCoverage(){clearTimeout(coverageTimer);coverageTimer=setTimeout(measureCoverage,180)}
 function measureCoverage(){
@@ -52,28 +63,36 @@ $('#create').onclick=()=>openSchemeForm(false);
 $('#manage-scheme').onclick=()=>openSchemeForm(true);
 $('#scheme-cancel').onclick=()=>dialog.close();
 $('#scheme-mode').onchange=()=>{baseOptions();$('#name').placeholder=$('#scheme-mode').value==='light'?'Например, Песочная':'Например, Дракула'};
-$('#scheme-form').onsubmit=e=>{e.preventDefault();const name=$('#name').value.trim();if(!name){$('#name').setCustomValidity('Введите название схемы');$('#name').reportValidity();return}if(editingScheme){const target=$('#scheme-mode').value,item=current();item.name=name;if(target!==mode){const source=mode;state.schemes[source]=catalog().filter(t=>t.id!==item.id);if(!state.schemes[source].length)state.schemes[source].push({id:crypto.randomUUID(),name:'Классика',tokens:{...defaults[source]}});state.selected[source]=state.schemes[source][0].id;if(state.schemes[target].some(t=>t.id===item.id))item.id=crypto.randomUUID();state.schemes[target].push(item);state.selected[target]=item.id;mode=target}}else{const target=$('#scheme-mode').value,base=state.schemes[target].find(t=>t.id===$('#scheme-base').value),item={id:crypto.randomUUID(),name,tokens:structuredClone(base.tokens)};state.schemes[target].push(item);state.selected[target]=item.id;mode=target}dialog.close();themeSelect();render();save()};
+$('#scheme-form').onsubmit=e=>{e.preventDefault();const name=$('#name').value.trim();if(!name){$('#name').setCustomValidity('Введите название схемы');$('#name').reportValidity();return}if(editingScheme){const target=$('#scheme-mode').value,item=current();item.name=name;if(target!==mode){const source=mode;state.schemes[source]=catalog().filter(t=>t.id!==item.id);if(!state.schemes[source].length)state.schemes[source].push({id:crypto.randomUUID(),name:'Классика',tokens:{...defaults[source]}});state.selected[source]=state.schemes[source][0].id;if(state.schemes[target].some(t=>t.id===item.id))item.id=crypto.randomUUID();state.schemes[target].push(item);state.selected[target]=item.id;mode=target}}else{const target=$('#scheme-mode').value,base=state.schemes[target].find(t=>t.id===$('#scheme-base').value),item={id:crypto.randomUUID(),name,base:base.base,tokens:structuredClone(base.tokens)};state.schemes[target].push(item);state.selected[target]=item.id;mode=target}dialog.close();themeSelect();render();save()};
 $('#name').oninput=()=>$('#name').setCustomValidity('');
 $('#delete').onclick=()=>{if(catalog().length===1){$('#scheme-help').textContent='Нельзя удалить единственную схему режима. Сначала создайте другую.';return}if(!confirm('Удалить цветовую схему «'+current().name+'»?'))return;state.schemes[mode]=catalog().filter(t=>t.id!==state.selected[mode]);state.selected[mode]=catalog()[0].id;dialog.close();themeSelect();render();save()};
-$('#reset').onclick=()=>{if(confirm('Сбросить цвета схемы «'+current().name+'» до классики '+(mode==='light'?'светлого':'тёмного')+' режима?')){current().tokens={...defaults[mode]};render();save()}};
+$('#reset').onclick=()=>{if(confirm('Сбросить цвета схемы «'+current().name+'» до базовой схемы для '+(mode==='light'?'светлого':'тёмного')+' режима?')){current().tokens={...baseline(current(),mode)};render();save()}};
 $('#search').oninput=render;
 $('#modes').onchange=e=>{mode=e.target.value;themeSelect();render();save()};
-$('#page-select').onchange=e=>{frame.src=e.target.value+'.html'};
+$('#page-select').onchange=e=>{frame.src='../'+e.target.value+'.html'};
 $('#sizes').onclick=e=>{const button=e.target.closest('[data-size]');if(!button)return;for(const b of $('#sizes').children){b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button))}frame.style.width=button.dataset.size};
-frame.onload=()=>{apply();frame.contentWindow.addEventListener('resize',scheduleCoverage);frame.contentDocument.addEventListener('click',scheduleCoverage);};
+frame.onload=()=>{
+ const page=$('#page-select');
+ const loaded=frame.contentDocument?.location.pathname.split('/').pop();
+ const screen=[...page.options].find(option=>option.value+'.html'===loaded);
+ if(screen)page.value=screen.value;
+ apply();
+ frame.contentWindow.addEventListener('resize',scheduleCoverage);
+ frame.contentDocument.addEventListener('click',scheduleCoverage);
+};
 function download(ext,text){const url=URL.createObjectURL(new Blob([text],{type:ext==='css'?'text/css':'application/json'}));const a=document.createElement('a');a.href=url;a.download=(current().name.replace(/[^\p{L}\p{N}_-]/gu,'-')||'theme')+'.'+ext;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 for(const [button,kind]of [['#open-used-count','used'],['#open-unused-count','unused']])$(button).onclick=()=>{measureCoverage();const screen=frame.contentDocument?.title.replace('[PD] ','')||'Страница';const query=new URLSearchParams({mode,id:current().id,view:kind,keys:JSON.stringify(coverage[kind]),screen,width:String(frame.clientWidth)});window.open('changes.html?'+query,'_blank','noopener')};
 $('#count').onclick=()=>{save();window.open('changes.html?'+new URLSearchParams({mode,id:current().id,view:'all'}),'_blank','noopener')};
 $('#changes').onclick=()=>{save();window.open('changes.html?'+new URLSearchParams({mode,id:current().id}),'_blank','noopener')};
-$('#export').onclick=()=>download('css',':root {\n'+Object.entries(primitives).map(([k,v])=>`  ${k}: ${v};`).join('\n')+'\n}\n\n'+`:root[data-color-mode="${mode}"] {\n  color-scheme: ${mode};\n`+Object.entries(current().tokens).map(([k,v])=>`  ${k}: ${v};`).join('\n')+'\n}');
-$('#json').onclick=()=>download('json',JSON.stringify({version:3,mode,name:current().name,tokens:current().tokens},null,2));
+$('#export').onclick=()=>download('css',':root {\n'+Object.entries(usedPrimitives(current())).map(([k,v])=>`  ${k}: ${v};`).join('\n')+'\n}\n\n'+`:root[data-color-mode="${mode}"] {\n  color-scheme: ${mode};\n`+Object.entries(current().tokens).map(([k,v])=>`  ${k}: ${v};`).join('\n')+'\n}');
+$('#json').onclick=()=>download('json',JSON.stringify({version:3,mode,name:current().name,base:current().base,tokens:current().tokens},null,2));
 $('#import').onclick=()=>$('#file').click();
 $('#file').onchange=async e=>{try{
  const t=JSON.parse(await e.target.files[0].text());if(typeof t.name!=='string')throw Error();
  const incoming=t.tokens&&['light','dark'].includes(t.mode)?[{mode:t.mode,tokens:t.tokens}]:t.light&&t.dark?[{mode:'light',tokens:t.light},{mode:'dark',tokens:t.dark}]:null;
  if(!incoming)throw Error();
  for(const entry of incoming){if(!entry.tokens||Array.isArray(entry.tokens)||typeof entry.tokens!=='object'||!Object.keys(entry.tokens).length)throw Error();for(const[k,v]of Object.entries(entry.tokens))if(!/^--theme-[\w-]+$/.test(k)||typeof v!=='string'||/[;{}<>]/.test(v))throw Error()}
- for(const entry of incoming){const item={id:crypto.randomUUID(),name:t.name,tokens:{...defaults[entry.mode],...entry.tokens}};state.schemes[entry.mode].push(item);state.selected[entry.mode]=item.id}
+ for(const entry of incoming){const item={id:crypto.randomUUID(),name:t.name,base:t.base==='contrast'?'contrast':undefined};item.tokens={...baseline(item,entry.mode),...entry.tokens};state.schemes[entry.mode].push(item);state.selected[entry.mode]=item.id}
  if(incoming.length===1)mode=incoming[0].mode;
  themeSelect();render();save();status(incoming.length===1?'Цветовая схема импортирована':'Палитры импортированы в оба режима');
  }catch{status('Некорректный JSON: нужны name, mode и tokens')}e.target.value=''};

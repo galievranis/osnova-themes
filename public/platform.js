@@ -1,1 +1,31 @@
-(()=>{if(window.self===window.top){const a=document.createElement('a');a.href='/';a.textContent='◐ Редактор тем';a.className='theme-editor-link';document.body.append(a)}document.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;if(button.className.includes('subscribe')){button.textContent=button.textContent.includes('Вы подписаны')?'Подписаться':'Вы подписаны'} });})();
+(() => {
+  const modal = document.querySelector('.modal-overlay[data-preview-return]');
+  if (!modal && window.self === window.top) {
+    const link = document.createElement('a');
+    link.href = './';
+    link.textContent = '◐ Темы';
+    link.className = 'theme-editor-link';
+    document.body.append(link);
+  }
+
+  function closeModal() {
+    location.assign(modal.dataset.previewReturn);
+  }
+
+  if (modal) {
+    modal.querySelector('.modal-window__close')?.focus({ preventScroll: true });
+    modal.addEventListener('click', event => {
+      if (event.target === modal || event.target.closest('.modal-window__close')) closeModal();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeModal();
+    });
+  }
+
+  document.addEventListener('click', event => {
+    const button = event.target.closest('button');
+    if (button?.className.includes('subscribe')) {
+      button.textContent = button.textContent.includes('Вы подписаны') ? 'Подписаться' : 'Вы подписаны';
+    }
+  });
+})();
