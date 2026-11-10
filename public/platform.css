@@ -198,6 +198,25 @@
   outline-offset: 1px;
 }
 
+[data-preview-settings="checkboxes"] .notifications-settings-checkboxes .checkbox__input {
+  visibility: visible;
+  opacity: 0;
+}
+
+[data-preview-settings="checkboxes"] .checkbox__input:not(:checked):not(:disabled) ~ .checkbox__control {
+  border-color: color-mix(in srgb, var(--theme-color-text-secondary) 76%,
+    var(--theme-color-check-background));
+}
+
+[data-preview-settings="checkboxes"] .checkbox__input:not(:checked) ~ .checkbox__control .checkbox__icon {
+  display: none;
+}
+
+[data-preview-settings="checkboxes"] .checkbox__input:focus-visible ~ .checkbox__control {
+  outline: 2px solid var(--theme-color-accent);
+  outline-offset: 2px;
+}
+
 [data-preview-archive] .modal-window--pro .pro__footer .button {
   color: #fff;
   background-color: #4b25b7;

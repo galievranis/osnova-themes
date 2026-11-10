@@ -10,6 +10,8 @@ ROUTES = {
     '/discovery': '/rating.html',
     '/discovery/blogs': '/rating.html',
     '/store': '/marketplace.html',
+    '/settings/notifications': '/checkboxes.html',
+    '/settings/blog': '/inputs.html',
     '/menu': '/popover-profile.html',
 }
 

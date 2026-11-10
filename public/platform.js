@@ -22,6 +22,21 @@
     });
   }
 
+  const settings = document.documentElement.dataset.previewSettings;
+  if (settings === 'checkboxes') {
+    document.addEventListener('change', event => {
+      if (!event.target.matches('.notifications-settings-checkboxes .checkbox__input')) return;
+      event.target.closest('.checkbox').classList.toggle('checkbox--checked', event.target.checked);
+    });
+  }
+  if (settings === 'inputs') {
+    document.addEventListener('input', event => {
+      if (!event.target.matches('.settings-wrapper :is(input, textarea)[maxlength]')) return;
+      const counter = event.target.parentElement.querySelector('.text-input-counter, .textarea__counter');
+      if (counter) counter.textContent = event.target.maxLength - event.target.value.length;
+    });
+  }
+
   document.addEventListener('click', event => {
     const button = event.target.closest('button');
     if (button?.className.includes('subscribe')) {
