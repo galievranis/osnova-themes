@@ -4,8 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>[PD] Витрина тем — vc.ru</title>
-  <link rel="stylesheet" href="showcase.css">
-  <script defer src="showcase.js"></script>
+  <link rel="stylesheet" href="showcase.css?v=background-pattern-1">
+  <script defer src="background-patterns.js"></script>
+  <script defer src="showcase.js?v=background-pattern-1"></script>
 </head>
 <body>
   <header class="toolbar" aria-label="Настройки предпросмотра">
@@ -27,7 +28,7 @@
           <option value="dark">Тёмный</option>
         </select>
       </label>
-      <label class="toolbar-field toolbar-screen">
+      <label class="toolbar-field">
         <span>Экран</span>
         <select id="screen" disabled>
           <option value="feed">Лента</option>
@@ -51,6 +52,16 @@
             <option value="modal-pro">Подписка Pro</option>
             <option value="modal-gift-plus">Подарить Plus</option>
           </optgroup>
+        </select>
+      </label>
+      <label class="toolbar-field">
+        <span>Паттерн</span>
+        <select id="pattern" disabled>
+          <option value="theme">По теме</option>
+          <option value="none">Без паттерна</option>
+          <option value="dots">Точки</option>
+          <option value="grid">Сетка</option>
+          <option value="diagonal">Диагонали</option>
         </select>
       </label>
     </div>

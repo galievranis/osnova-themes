@@ -20,11 +20,17 @@ async function loadShowcase() {
   const options = document.getElementById('theme-options');
   const modeSelect = document.getElementById('mode');
   const screenSelect = document.getElementById('screen');
+  const patternSelect = document.getElementById('pattern');
   const frame = document.getElementById('preview');
   const params = new URLSearchParams(location.search);
   let selectedTheme = themes.find(theme => theme.id === params.get('theme')) ?? themes[0];
   if ([...screenSelect.options].some(option => option.value === params.get('screen'))) {
     screenSelect.value = params.get('screen');
+  }
+
+  const pattern = params.get('pattern');
+  if (pattern === 'none' || Object.hasOwn(ThemeBackgroundPatterns, pattern)) {
+    patternSelect.value = pattern;
   }
 
   function setMode(preferred) {
@@ -37,6 +43,8 @@ async function loadShowcase() {
     params.set('theme', selectedTheme.id);
     params.set('mode', modeSelect.value);
     params.set('screen', screenSelect.value);
+    if (patternSelect.value === 'theme') params.delete('pattern');
+    else params.set('pattern', patternSelect.value);
     history.replaceState(null, '', `?${params}`);
   }
 
@@ -59,7 +67,12 @@ async function loadShowcase() {
       style.id = 'showcase-theme';
       doc.head.append(style);
     }
-    const declarations = Object.entries({ ...grays, ...tokens })
+    const previewTokens = { ...grays, ...tokens };
+    const pattern = patternSelect.value;
+    if (pattern !== 'theme') {
+      previewTokens['--theme-background-pattern'] = ThemeBackgroundPatterns[pattern] ?? 'none';
+    }
+    const declarations = Object.entries(previewTokens)
       .map(([key, value]) => `${key}: ${value};`).join('\n');
     style.textContent = `:root:root { color-scheme: ${modeSelect.value};\n${declarations}\n}`;
   }
@@ -152,6 +165,10 @@ async function loadShowcase() {
     applyTheme();
     syncLink();
   });
+  patternSelect.addEventListener('change', () => {
+    applyTheme();
+    syncLink();
+  });
   screenSelect.addEventListener('change', () => {
     frame.src = `${screenSelect.value}.html`;
     syncLink();
@@ -163,7 +180,7 @@ async function loadShowcase() {
   frame.src = `${screenSelect.value}.html`;
   frame.hidden = false;
   picker.hidden = false;
-  for (const select of [modeSelect, screenSelect]) select.disabled = false;
+  for (const select of [modeSelect, screenSelect, patternSelect]) select.disabled = false;
 }
 
 const status = document.getElementById('status');

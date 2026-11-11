@@ -20,7 +20,7 @@ body {
 
 .toolbar-fields {
   display: grid;
-  grid-template-columns: minmax(0, 204px) minmax(0, 186px) minmax(0, 224px);
+  grid-template-columns: minmax(0, 204px) minmax(0, 186px) minmax(0, 224px) minmax(0, 192px);
   justify-content: center;
   gap: 20px;
 }
@@ -189,7 +189,7 @@ iframe {
   border: 0;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 780px) {
   .toolbar {
     padding-inline: 16px;
   }
@@ -199,10 +199,6 @@ iframe {
     gap: 8px 12px;
     max-width: 460px;
     margin-inline: auto;
-  }
-
-  .toolbar-screen {
-    grid-column: 1 / -1;
   }
 
   .toolbar-control {
@@ -218,7 +214,7 @@ iframe {
   }
 
   .toolbar-field {
-    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-columns: 52px minmax(0, 1fr);
   }
 }
 
