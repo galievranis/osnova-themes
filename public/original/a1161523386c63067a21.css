@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+.settings { padding: 8px 0px; }
+
+.settings__link { display: grid; grid-template-columns: min-content auto; column-gap: 12px; margin: 0px 6px; padding: 12px 14px; border-radius: 12px; user-select: none; }
+
+@media (hover: hover) {
+  .settings__link:hover { background-color: var(--theme-color-popover-item-background-selected); }
+}
+
+.settings__link .icon { align-self: center; grid-area: 1 / 1 / span 2; padding: 10px; }
+
+.settings__link-title, .settings__link-subtitle { grid-column: 2; }
+
+.settings__link-subtitle { font-size: 15px; line-height: 22px; color: var(--theme-color-text-secondary); }

@@ -1,0 +1,77 @@
+[data-appearance-header="mobile"] {
+  display: none;
+}
+
+@media (max-width: 924px) {
+  :root[data-appearance] {
+    --layout-tabbar-height: 50px !important;
+  }
+
+  [data-appearance-header="desktop"] {
+    display: none;
+  }
+
+  [data-appearance-header="mobile"] {
+    display: flex;
+  }
+}
+
+.settings-wrapper__body {
+  padding-bottom: 32px;
+}
+
+.settings-wrapper .-wCE9pcP {
+  row-gap: 24px;
+}
+
+.mADoi96g:has(> .appearance-artwork) {
+  padding: 0;
+}
+
+.appearance-artwork {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+[data-appearance-theme]:focus-visible {
+  outline: 2px solid var(--theme-color-accent);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+[data-appearance-header] :is(.header__logo, .header__back-button, .quick-search-button,
+  .bell__button, .account-button__inner > .icon) {
+  color: var(--theme-color-header-icon, var(--theme-color-text-primary));
+}
+
+[data-appearance-pattern] > body {
+  isolation: isolate;
+}
+
+[data-appearance-pattern] > body::before,
+.appearance-backdrop-pattern {
+  mask-image: var(--appearance-pattern-image);
+  mask-repeat: repeat;
+  mask-mode: alpha;
+}
+
+[data-appearance-pattern] > body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--theme-color-backdrop-pattern);
+  mask-size: var(--theme-size-backdrop-pattern);
+}
+
+.appearance-backdrop-pattern {
+  fill: var(--theme-color-backdrop-pattern);
+  mask-size: calc(var(--theme-size-backdrop-pattern) * 32 / 107);
+}
+
+[data-appearance-pattern] > body::before,
+.appearance-backdrop-pattern {
+  opacity: var(--theme-opacity-backdrop-pattern);
+}

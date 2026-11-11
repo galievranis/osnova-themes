@@ -7,7 +7,7 @@ def read_json(path):
     return json.loads(path.read_text(encoding='utf-8'))
 
 
-def published_themes(root):
+def published_themes(root, catalog='themes.json'):
     source = root / 'showcase'
     public = root / 'public'
     contrast = read_json(public / 'contrast.json')
@@ -18,7 +18,7 @@ def published_themes(root):
     }
     themes = []
     ids = set()
-    for entry in read_json(source / 'themes.json'):
+    for entry in read_json(source / catalog):
         key, name = entry['id'], entry['name']
         if not re.fullmatch(r'[a-z0-9-]+', key) or key in ids or not name.strip():
             raise ValueError(f'Invalid or duplicate published theme: {key!r}')
