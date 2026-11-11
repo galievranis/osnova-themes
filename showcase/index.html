@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>[PD] Витрина тем — vc.ru</title>
-  <link rel="stylesheet" href="showcase.css?v=background-pattern-2">
-  <script defer src="background-patterns.js?v=2"></script>
-  <script defer src="showcase.js?v=background-pattern-2"></script>
+  <link rel="stylesheet" href="showcase.css?v=background-pattern-3">
+  <script defer src="background-patterns.js?v=3"></script>
+  <script defer src="showcase.js?v=background-pattern-3"></script>
 </head>
 <body>
   <header class="toolbar" aria-label="Настройки предпросмотра">
@@ -21,13 +21,21 @@
           <ul class="theme-options" id="theme-options" aria-labelledby="theme-label"></ul>
         </details>
       </div>
-      <label class="toolbar-field">
-        <span>Режим</span>
-        <select id="mode" disabled>
-          <option value="light">Светлый</option>
-          <option value="dark">Тёмный</option>
-        </select>
-      </label>
+      <div class="mode-picker" role="group" aria-label="Режим темы">
+        <label title="Светлый режим">
+          <input type="radio" name="mode" value="light" aria-label="Светлый режим" checked disabled>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>
+          </svg>
+        </label>
+        <label title="Тёмный режим">
+          <input type="radio" name="mode" value="dark" aria-label="Тёмный режим" disabled>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+            <path d="M21 13.3A9 9 0 0 1 10.7 3 9 9 0 1 0 21 13.3Z"/>
+          </svg>
+        </label>
+      </div>
       <label class="toolbar-field">
         <span>Экран</span>
         <select id="screen" disabled>
@@ -62,6 +70,8 @@
           <option value="dots">Точки</option>
           <option value="grid">Сетка</option>
           <option value="diagonal">Диагонали</option>
+          <option value="crosses">Крестики</option>
+          <option value="checkerboard">Шахматка</option>
         </select>
       </label>
       <div class="pattern-sliders">

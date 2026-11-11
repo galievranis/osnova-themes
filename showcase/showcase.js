@@ -18,7 +18,8 @@ async function loadShowcase() {
   const picker = document.getElementById('theme-picker');
   const trigger = picker.querySelector('summary');
   const options = document.getElementById('theme-options');
-  const modeSelect = document.getElementById('mode');
+  const modeOptions = [...document.querySelectorAll('input[name="mode"]')];
+  const currentMode = () => modeOptions.find(option => option.checked).value;
   const screenSelect = document.getElementById('screen');
   const patternSelect = document.getElementById('pattern');
   const patternSize = document.getElementById('pattern-size');
@@ -59,13 +60,16 @@ async function loadShowcase() {
 
   function setMode(preferred) {
     const { modes } = selectedTheme;
-    for (const option of modeSelect.options) option.disabled = !Object.hasOwn(modes, option.value);
-    modeSelect.value = Object.hasOwn(modes, preferred) ? preferred : Object.keys(modes)[0];
+    const mode = Object.hasOwn(modes, preferred) ? preferred : Object.keys(modes)[0];
+    for (const option of modeOptions) {
+      option.disabled = !Object.hasOwn(modes, option.value);
+      option.checked = option.value === mode;
+    }
   }
 
   function syncLink() {
     params.set('theme', selectedTheme.id);
-    params.set('mode', modeSelect.value);
+    params.set('mode', currentMode());
     params.set('screen', screenSelect.value);
     if (patternSelect.value === 'theme') params.delete('pattern');
     else params.set('pattern', patternSelect.value);
@@ -80,10 +84,10 @@ async function loadShowcase() {
     const doc = frame.contentDocument;
     if (!doc?.head || !doc.body) return;
     const { grays, modes } = selectedTheme;
-    const tokens = modes[modeSelect.value];
-    doc.documentElement.dataset.colorMode = modeSelect.value;
+    const tokens = modes[currentMode()];
+    doc.documentElement.dataset.colorMode = currentMode();
     if (doc.documentElement.hasAttribute('data-preview-archive')) {
-      doc.documentElement.dataset.theme = modeSelect.value;
+      doc.documentElement.dataset.theme = currentMode();
     }
     doc.documentElement.toggleAttribute('data-showcase-bright-buttons',
       Object.hasOwn(tokens, '--theme-color-button-accent'));
@@ -108,7 +112,7 @@ async function loadShowcase() {
     }
     const declarations = Object.entries(previewTokens)
       .map(([key, value]) => `${key}: ${value};`).join('\n');
-    style.textContent = `:root:root { color-scheme: ${modeSelect.value};\n${declarations}\n}${patternSizeRule}`;
+    style.textContent = `:root:root { color-scheme: ${currentMode()};\n${declarations}\n}${patternSizeRule}`;
   }
 
   function closePicker(restoreFocus = false) {
@@ -139,7 +143,7 @@ async function loadShowcase() {
     button.append(swatch, theme.name);
     button.addEventListener('click', () => {
       selectedTheme = theme;
-      setMode(modeSelect.value);
+      setMode(currentMode());
       updatePicker();
       closePicker(true);
       applyTheme();
@@ -154,11 +158,11 @@ async function loadShowcase() {
 
   function updatePicker() {
     document.getElementById('theme-name').textContent = selectedTheme.name;
-    paintSwatch(document.getElementById('theme-swatch'), selectedTheme, modeSelect.value);
+    paintSwatch(document.getElementById('theme-swatch'), selectedTheme, currentMode());
     for (const { theme, button, swatch } of rows) {
       button.toggleAttribute('data-selected', theme === selectedTheme);
       button.setAttribute('aria-current', String(theme === selectedTheme));
-      paintSwatch(swatch, theme, modeSelect.value);
+      paintSwatch(swatch, theme, currentMode());
     }
   }
 
@@ -194,11 +198,13 @@ async function loadShowcase() {
     syncLink();
     frame.contentDocument?.addEventListener('pointerdown', () => closePicker());
   });
-  modeSelect.addEventListener('change', () => {
-    updatePicker();
-    applyTheme();
-    syncLink();
-  });
+  for (const option of modeOptions) {
+    option.addEventListener('change', () => {
+      updatePicker();
+      applyTheme();
+      syncLink();
+    });
+  }
   function changePattern() {
     updatePatternControls();
     applyTheme();
@@ -219,7 +225,7 @@ async function loadShowcase() {
   frame.src = `${screenSelect.value}.html`;
   frame.hidden = false;
   picker.hidden = false;
-  for (const select of [modeSelect, screenSelect, patternSelect]) select.disabled = false;
+  for (const select of [screenSelect, patternSelect]) select.disabled = false;
 }
 
 const status = document.getElementById('status');
