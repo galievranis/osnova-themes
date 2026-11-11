@@ -21,6 +21,14 @@ async function loadShowcase() {
   const modeSelect = document.getElementById('mode');
   const screenSelect = document.getElementById('screen');
   const patternSelect = document.getElementById('pattern');
+  const patternSize = document.getElementById('pattern-size');
+  const patternOpacity = document.getElementById('pattern-opacity');
+  const sliders = [
+    { input: patternSize, param: 'patternSize', unit: ' px' },
+    { input: patternOpacity, param: 'patternOpacity', unit: '%' },
+  ];
+  const presets = createThemeBackgroundPatterns();
+  const hasPreset = () => Object.hasOwn(presets, patternSelect.value);
   const frame = document.getElementById('preview');
   const params = new URLSearchParams(location.search);
   let selectedTheme = themes.find(theme => theme.id === params.get('theme')) ?? themes[0];
@@ -29,8 +37,24 @@ async function loadShowcase() {
   }
 
   const pattern = params.get('pattern');
-  if (pattern === 'none' || Object.hasOwn(ThemeBackgroundPatterns, pattern)) {
+  if (pattern === 'none' || Object.hasOwn(presets, pattern)) {
     patternSelect.value = pattern;
+  }
+
+  for (const { input, param } of sliders) {
+    const value = params.get(param);
+    if (value !== null && /^\d+$/.test(value) && Number(value) >= Number(input.min) && Number(value) <= Number(input.max)) {
+      input.value = value;
+    }
+  }
+
+  function updatePatternControls() {
+    for (const { input, unit } of sliders) {
+      input.disabled = !hasPreset();
+      const value = input.value + unit;
+      document.getElementById(`${input.id}-value`).value = value;
+      input.setAttribute('aria-valuetext', value);
+    }
   }
 
   function setMode(preferred) {
@@ -45,6 +69,10 @@ async function loadShowcase() {
     params.set('screen', screenSelect.value);
     if (patternSelect.value === 'theme') params.delete('pattern');
     else params.set('pattern', patternSelect.value);
+    for (const { input, param } of sliders) {
+      if (input.value === input.defaultValue) params.delete(param);
+      else params.set(param, input.value);
+    }
     history.replaceState(null, '', `?${params}`);
   }
 
@@ -69,12 +97,18 @@ async function loadShowcase() {
     }
     const previewTokens = { ...grays, ...tokens };
     const pattern = patternSelect.value;
-    if (pattern !== 'theme') {
-      previewTokens['--theme-background-pattern'] = ThemeBackgroundPatterns[pattern] ?? 'none';
+    let patternSizeRule = '';
+    if (hasPreset()) {
+      const gradients = createThemeBackgroundPatterns(patternOpacity.valueAsNumber);
+      previewTokens['--theme-background-pattern'] = gradients[pattern];
+      const tile = `${patternSize.valueAsNumber}px`;
+      patternSizeRule = `\n:root > body { background-size: ${tile} ${tile}; }`;
+    } else if (pattern === 'none') {
+      previewTokens['--theme-background-pattern'] = 'none';
     }
     const declarations = Object.entries(previewTokens)
       .map(([key, value]) => `${key}: ${value};`).join('\n');
-    style.textContent = `:root:root { color-scheme: ${modeSelect.value};\n${declarations}\n}`;
+    style.textContent = `:root:root { color-scheme: ${modeSelect.value};\n${declarations}\n}${patternSizeRule}`;
   }
 
   function closePicker(restoreFocus = false) {
@@ -165,16 +199,21 @@ async function loadShowcase() {
     applyTheme();
     syncLink();
   });
-  patternSelect.addEventListener('change', () => {
+  function changePattern() {
+    updatePatternControls();
     applyTheme();
     syncLink();
-  });
+  }
+
+  patternSelect.addEventListener('change', changePattern);
+  for (const { input } of sliders) input.addEventListener('input', changePattern);
   screenSelect.addEventListener('change', () => {
     frame.src = `${screenSelect.value}.html`;
     syncLink();
   });
 
   setMode(params.get('mode'));
+  updatePatternControls();
   updatePicker();
   syncLink();
   frame.src = `${screenSelect.value}.html`;

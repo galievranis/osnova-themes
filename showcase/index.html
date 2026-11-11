@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>[PD] Витрина тем — vc.ru</title>
-  <link rel="stylesheet" href="showcase.css?v=background-pattern-1">
-  <script defer src="background-patterns.js"></script>
-  <script defer src="showcase.js?v=background-pattern-1"></script>
+  <link rel="stylesheet" href="showcase.css?v=background-pattern-2">
+  <script defer src="background-patterns.js?v=2"></script>
+  <script defer src="showcase.js?v=background-pattern-2"></script>
 </head>
 <body>
   <header class="toolbar" aria-label="Настройки предпросмотра">
@@ -64,6 +64,18 @@
           <option value="diagonal">Диагонали</option>
         </select>
       </label>
+      <div class="pattern-sliders">
+        <div class="pattern-slider">
+          <label for="pattern-size">Размер</label>
+          <output for="pattern-size" id="pattern-size-value" aria-hidden="true">24 px</output>
+          <input type="range" id="pattern-size" min="8" max="80" value="24" disabled>
+        </div>
+        <div class="pattern-slider">
+          <label for="pattern-opacity">Непрозрачность</label>
+          <output for="pattern-opacity" id="pattern-opacity-value" aria-hidden="true">14%</output>
+          <input type="range" id="pattern-opacity" min="0" max="100" value="14" disabled>
+        </div>
+      </div>
     </div>
   </header>
   <p id="status" role="status">Загрузка тем…</p>

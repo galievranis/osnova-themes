@@ -47,7 +47,7 @@ function measureCoverage(){
  }catch{$('#used-count').textContent='—';$('#unused-count').textContent='—'}
 }
 const patternToken = '--theme-background-pattern';
-const patterns = ThemeBackgroundPatterns;
+const patterns = createThemeBackgroundPatterns();
 const patternSelect = $('#background-pattern');
 
 function syncPattern() {
