@@ -184,18 +184,14 @@
 }
 
 [data-preview-archive] .field--default:not(.field--disabled, .field--invalid, .field--glass) {
-  --theme-color-field-border-default: color-mix(
-    in srgb, var(--theme-color-text-secondary) 76%, var(--theme-color-field-background)
-  );
-  --theme-color-field-border-hover: var(--theme-color-field-border-default);
   --theme-color-text-secondary-light: var(--theme-color-text-secondary);
 }
 
 /* The archived input has no production script to set .field--focused. */
 [data-preview-archive] .field--default:not(.field--disabled, .field--invalid, .field--glass):focus-within > .field__wrapper {
   background-color: var(--theme-color-field-background-hover);
-  outline: 2px solid var(--theme-color-field-border-focus);
-  outline-offset: 1px;
+  border-color: var(--theme-color-field-border-active);
+  box-shadow: var(--theme-shadow-field);
 }
 
 [data-preview-settings="checkboxes"] .notifications-settings-checkboxes .checkbox__input {
@@ -521,3 +517,8 @@
 }
 
 [data-preview-messenger="new-chat"] .Ndn0UMfZ button { pointer-events: auto; }
+
+:root > body {
+  background-image: var(--theme-background-pattern, none);
+  background-size: 24px 24px;
+}

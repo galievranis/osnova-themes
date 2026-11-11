@@ -46,10 +46,36 @@ function measureCoverage(){
  $('#used-count').parentElement.title=used.join('\n');
  }catch{$('#used-count').textContent='—';$('#unused-count').textContent='—'}
 }
-function themeSelect(){$('#themes').replaceChildren(...catalog().map(t=>new Option(t.name,t.id)));$('#themes').value=state.selected[mode];$('#name').value=current().name;$('#modes').value=mode}
+const patternToken = '--theme-background-pattern';
+const patternInk = 'color-mix(in srgb, var(--theme-color-text-primary) 14%, transparent)';
+const patterns = {
+ dots: `radial-gradient(circle, ${patternInk} 1px, transparent 1.5px)`,
+ grid: `linear-gradient(${patternInk} 1px, transparent 1px), linear-gradient(90deg, ${patternInk} 1px, transparent 1px)`,
+ diagonal: `linear-gradient(135deg, ${patternInk} 3%, transparent 3% 47%, ${patternInk} 47% 53%, transparent 53% 97%, ${patternInk} 97%)`,
+};
+const patternSelect = $('#background-pattern');
+
+function syncPattern() {
+ const image = current().tokens[patternToken];
+ const preset = Object.keys(patterns).find(key => patterns[key] === image);
+ const custom = Boolean(image && image !== 'none' && !preset);
+ patternSelect.querySelector('[value="custom"]')?.remove();
+ if (custom) patternSelect.add(new Option('Свой паттерн', 'custom'));
+ patternSelect.value = preset ?? (custom ? 'custom' : 'none');
+}
+
+patternSelect.onchange = () => {
+ const choice = patternSelect.value;
+ if (choice === 'none') delete current().tokens[patternToken];
+ else current().tokens[patternToken] = patterns[choice];
+ syncPattern();
+ render();
+ save();
+};
+function themeSelect(){$('#themes').replaceChildren(...catalog().map(t=>new Option(t.name,t.id)));$('#themes').value=state.selected[mode];$('#name').value=current().name;$('#modes').value=mode;syncPattern()}
 addEventListener('inspect-tokens',e=>{const keys=e.detail.tokens.filter(k=>Object.hasOwn(current().tokens,k));$('#search').value='';render();for(const row of $('#tokens').querySelectorAll('.token')){const key=row.querySelector('input[type=text]').id;row.classList.toggle('inspected-token',keys.includes(key))}if(keys.length){for(const row of $('#tokens').querySelectorAll('.token'))row.hidden=!row.classList.contains('inspected-token');for(const group of $('#tokens').querySelectorAll('details'))group.hidden=!group.querySelector('.inspected-token');$('#tokens').scrollTop=0;const picked=$('#tokens .inspected-token input[type=text]');if(picked)picked.focus({preventScroll:true});$('#count').textContent=keys.length+' токенов элемента'}status(keys.length?'Цвет элемента: '+keys[0].replace('--theme-','')+' · '+keys.length+' связанных токенов':'Для этого элемента токены темы не найдены')});
 function group(k){if(k.includes('brand'))return'Бренд';if(/accent|positive|negative|rating|on-fill/.test(k))return'Акцент и статусы';if(/text|inverse/.test(k))return'Текст и иконки';if(/button/.test(k))return'Кнопки';if(/field|check/.test(k))return'Поля';if(/background|border/.test(k))return'Поверхности и границы';return'Эффекты и остальное'}
-function render(){const query=$('#search').value.toLowerCase(),groups={};let count=0;$('#tokens').replaceChildren();for(const [k,v]of Object.entries(current().tokens)){if(!`${k} ${v} ${group(k)}`.toLowerCase().includes(query))continue;count++;(groups[group(k)]??=[]).push([k,v])}for(const [name,items]of Object.entries(groups)){const details=document.createElement('details');details.open=true;const summary=document.createElement('summary');summary.textContent=`${name} · ${items.length}`;details.append(summary);for(const[k,v]of items){const box=document.createElement('div');box.className='token';const label=document.createElement('label');label.textContent=k.replace('--theme-','');label.title=k;const row=document.createElement('div');row.className='row';const input=document.createElement('input');input.type='text';input.value=v;input.id=k;label.htmlFor=k;input.setAttribute('aria-label',k);const color=document.createElement('input');color.type='color';color.title=k;color.setAttribute('aria-label','Выбрать цвет '+k);const resolved=v.replace(/var\((--classic-gray-[\w-]+)\)/g,(_,key)=>primitives[key]||'#808080');color.value=/^#[\da-f]{6}$/i.test(resolved)?resolved:'#808080';const update=value=>{const valid=CSS.supports('color',value)||CSS.supports('box-shadow',value)||CSS.supports('background',value)||CSS.supports('filter',value)||/^(0?\.\d+|none)$/.test(value);input.classList.toggle('invalid',!valid);input.setAttribute('aria-invalid',String(!valid));if(!valid){status('Проверьте значение токена');return}current().tokens[k]=value;
+function render(){const query=$('#search').value.toLowerCase(),groups={};let count=0;$('#tokens').replaceChildren();for(const [k,v]of Object.entries(current().tokens)){if(!`${k} ${v} ${group(k)}`.toLowerCase().includes(query))continue;count++;(groups[group(k)]??=[]).push([k,v])}for(const [name,items]of Object.entries(groups)){const details=document.createElement('details');details.open=true;const summary=document.createElement('summary');summary.textContent=`${name} · ${items.length}`;details.append(summary);for(const[k,v]of items){const box=document.createElement('div');box.className='token';const label=document.createElement('label');label.textContent=k.replace('--theme-','');label.title=k;const row=document.createElement('div');row.className='row';const input=document.createElement('input');input.type='text';input.value=v;input.id=k;label.htmlFor=k;input.setAttribute('aria-label',k);const color=document.createElement('input');color.type='color';color.title=k;color.setAttribute('aria-label','Выбрать цвет '+k);const resolved=v.replace(/var\((--classic-gray-[\w-]+)\)/g,(_,key)=>primitives[key]||'#808080');color.value=/^#[\da-f]{6}$/i.test(resolved)?resolved:'#808080';const update=value=>{const valid=k===patternToken?CSS.supports('background-image',value):CSS.supports('color',value)||CSS.supports('box-shadow',value)||CSS.supports('background',value)||CSS.supports('filter',value)||/^(0?\.\d+|none)$/.test(value);input.classList.toggle('invalid',!valid);input.setAttribute('aria-invalid',String(!valid));if(!valid){status('Проверьте значение токена');return}current().tokens[k]=value;if(k===patternToken)syncPattern();
 // Resolve references and normalize CSS color syntax for the native swatch.
 if(k.startsWith('--theme-color-')){let resolved=value;const seen=new Set();while(/var\(/.test(resolved)){let changed=false;resolved=resolved.replace(/var\(\s*(--[\w-]+)\s*\)/g,(_,key)=>{if(seen.has(key))return '';seen.add(key);changed=true;return current().tokens[key]??primitives[key]??''});if(!changed)break}
 if(CSS.supports('color',resolved)){const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');ctx.fillStyle=resolved;const normalized=ctx.fillStyle;if(/^#[\da-f]{6}$/i.test(normalized))color.value=normalized;else{ctx.fillRect(0,0,1,1);const rgba=ctx.getImageData(0,0,1,1).data;color.value='#'+[...rgba].slice(0,3).map(n=>n.toString(16).padStart(2,'0')).join('')}}}
@@ -66,7 +92,7 @@ $('#scheme-mode').onchange=()=>{baseOptions();$('#name').placeholder=$('#scheme-
 $('#scheme-form').onsubmit=e=>{e.preventDefault();const name=$('#name').value.trim();if(!name){$('#name').setCustomValidity('Введите название схемы');$('#name').reportValidity();return}if(editingScheme){const target=$('#scheme-mode').value,item=current();item.name=name;if(target!==mode){const source=mode;state.schemes[source]=catalog().filter(t=>t.id!==item.id);if(!state.schemes[source].length)state.schemes[source].push({id:crypto.randomUUID(),name:'Классика',tokens:{...defaults[source]}});state.selected[source]=state.schemes[source][0].id;if(state.schemes[target].some(t=>t.id===item.id))item.id=crypto.randomUUID();state.schemes[target].push(item);state.selected[target]=item.id;mode=target}}else{const target=$('#scheme-mode').value,base=state.schemes[target].find(t=>t.id===$('#scheme-base').value),item={id:crypto.randomUUID(),name,base:base.base,tokens:structuredClone(base.tokens)};state.schemes[target].push(item);state.selected[target]=item.id;mode=target}dialog.close();themeSelect();render();save()};
 $('#name').oninput=()=>$('#name').setCustomValidity('');
 $('#delete').onclick=()=>{if(catalog().length===1){$('#scheme-help').textContent='Нельзя удалить единственную схему режима. Сначала создайте другую.';return}if(!confirm('Удалить цветовую схему «'+current().name+'»?'))return;state.schemes[mode]=catalog().filter(t=>t.id!==state.selected[mode]);state.selected[mode]=catalog()[0].id;dialog.close();themeSelect();render();save()};
-$('#reset').onclick=()=>{if(confirm('Сбросить цвета схемы «'+current().name+'» до базовой схемы для '+(mode==='light'?'светлого':'тёмного')+' режима?')){current().tokens={...baseline(current(),mode)};render();save()}};
+$('#reset').onclick=()=>{if(confirm('Сбросить цвета схемы «'+current().name+'» до базовой схемы для '+(mode==='light'?'светлого':'тёмного')+' режима?')){current().tokens={...baseline(current(),mode)};syncPattern();render();save()}};
 $('#search').oninput=render;
 $('#modes').onchange=e=>{mode=e.target.value;themeSelect();render();save()};
 $('#page-select').onchange=e=>{frame.src='../'+e.target.value+'.html'};
@@ -84,7 +110,16 @@ function download(ext,text){const url=URL.createObjectURL(new Blob([text],{type:
 for(const [button,kind]of [['#open-used-count','used'],['#open-unused-count','unused']])$(button).onclick=()=>{measureCoverage();const screen=frame.contentDocument?.title.replace('[PD] ','')||'Страница';const query=new URLSearchParams({mode,id:current().id,view:kind,keys:JSON.stringify(coverage[kind]),screen,width:String(frame.clientWidth)});window.open('changes.html?'+query,'_blank','noopener')};
 $('#count').onclick=()=>{save();window.open('changes.html?'+new URLSearchParams({mode,id:current().id,view:'all'}),'_blank','noopener')};
 $('#changes').onclick=()=>{save();window.open('changes.html?'+new URLSearchParams({mode,id:current().id}),'_blank','noopener')};
-$('#export').onclick=()=>download('css',':root {\n'+Object.entries(usedPrimitives(current())).map(([k,v])=>`  ${k}: ${v};`).join('\n')+'\n}\n\n'+`:root[data-color-mode="${mode}"] {\n  color-scheme: ${mode};\n`+Object.entries(current().tokens).map(([k,v])=>`  ${k}: ${v};`).join('\n')+'\n}');
+$('#export').onclick = () => {
+ const tokens = current().tokens;
+ const declarations = values => Object.entries(values).map(([key, value]) => `  ${key}: ${value};`).join('\n');
+ const selector = `:root[data-color-mode="${mode}"]`;
+ const pattern = tokens[patternToken] ? `\n\n${selector} > body {
+  background-image: var(${patternToken}, none);
+  background-size: 24px 24px;
+}` : '';
+ download('css', `:root {\n${declarations(usedPrimitives(current()))}\n}\n\n${selector} {\n  color-scheme: ${mode};\n${declarations(tokens)}\n}${pattern}`);
+};
 $('#json').onclick=()=>download('json',JSON.stringify({version:3,mode,name:current().name,base:current().base,tokens:current().tokens},null,2));
 $('#import').onclick=()=>$('#file').click();
 $('#file').onchange=async e=>{try{
