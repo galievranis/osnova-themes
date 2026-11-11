@@ -6,6 +6,9 @@
   }
 
   const cards = [...document.querySelectorAll('[data-appearance-theme]')];
+  const grid = document.getElementById('appearance-theme-grid');
+  const viewSwitcher = document.getElementById('appearance-view-switcher');
+  const viewTabs = [...viewSwitcher.querySelectorAll('button')];
   const radios = [...document.querySelectorAll('input[name="color-mode"]')];
   const [catalog, extraThemes, source] = await Promise.all([
     load('themes.json').then(response => response.json()),
@@ -29,6 +32,8 @@
     ? preferences.theme : 'classic';
   let selectedMode = radios.some(radio => radio.value === preferences?.mode)
     ? preferences.mode : 'light';
+
+  let compactView = preferences?.compactView === true;
 
   const themeStyle = document.createElement('style');
   document.head.append(themeStyle);
@@ -73,11 +78,15 @@
     const id = card.dataset.appearanceTheme;
     const svg = makeArtwork(id);
     card.querySelector('.mADoi96g').replaceChildren(svg);
+    const swatch = document.createElement('span');
+    swatch.className = 'appearance-swatch';
+    swatch.setAttribute('aria-hidden', 'true');
+    card.prepend(swatch);
     card.addEventListener('click', () => {
       selectedTheme = id;
       save();
     });
-    return { id, card, svg };
+    return { id, card, svg, swatch };
   });
 
   function declarations(themeId, mode) {
@@ -102,11 +111,18 @@
     root.dataset.theme = selectedTheme === 'contrast' ? 'contrast' : 'classic';
     themeStyle.textContent = `:root[data-appearance][data-color-mode] { color-scheme: ${mode};\n${declarations(selectedTheme, mode)}\n}`;
 
-    for (const { id, card, svg } of previews) {
+    grid.toggleAttribute('data-compact', compactView);
+    for (const tab of viewTabs) {
+      tab.setAttribute('aria-pressed', String((tab.dataset.appearanceView === 'compact') === compactView));
+    }
+
+    for (const { id, card, svg, swatch } of previews) {
       const selected = id === selectedTheme;
       card.classList.toggle('zvEjzVpg', selected);
       card.setAttribute('aria-pressed', String(selected));
-      svg.style.cssText = declarations(id, mode);
+      const palette = declarations(id, mode);
+      svg.style.cssText = palette;
+      swatch.style.cssText = palette;
     }
 
     for (const radio of radios) {
@@ -118,7 +134,7 @@
   function save() {
     apply();
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode }));
+      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, compactView }));
     } catch {
       // Selection still works when browser storage is unavailable.
     }
@@ -130,6 +146,13 @@
       save();
     });
   }
+  for (const tab of viewTabs) {
+    tab.addEventListener('click', () => {
+      compactView = tab.dataset.appearanceView === 'compact';
+      save();
+    });
+  }
+  viewSwitcher.hidden = false;
   systemMode.addEventListener('change', () => {
     if (selectedMode === 'auto') apply();
   });

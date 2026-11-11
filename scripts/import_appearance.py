@@ -41,9 +41,9 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=11')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=13')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=14'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=16'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
@@ -64,6 +64,18 @@ def main():
         radio['name'] = 'color-mode'
 
     grid = page.select_one('.settings-wrapper .-wCE9pcP')
+    grid['id'] = 'appearance-theme-grid'
+    view_switcher = page.new_tag('div', id='appearance-view-switcher', role='group', hidden='',
+                                 attrs={'aria-label': 'Вид списка тем'})
+    for view, label in (('preview', 'Превью'), ('compact', 'Компактно')):
+        tab = page.new_tag('button', type='button', attrs={
+            'data-appearance-view': view,
+            'aria-controls': grid['id'],
+            'aria-pressed': str(view == 'preview').lower(),
+        })
+        tab.string = label
+        view_switcher.append(tab)
+    page.body.append(view_switcher)
     template = deepcopy(grid.select_one('.b3kUJqmM'))
     grid.clear()
     for theme, label in THEMES:

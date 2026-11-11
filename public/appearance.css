@@ -75,3 +75,95 @@
 .appearance-backdrop-pattern {
   opacity: var(--theme-opacity-backdrop-pattern);
 }
+
+[data-appearance] .view {
+  padding-bottom: calc(var(--layout-view-offset-y) + 68px);
+}
+
+#appearance-view-switcher:not([hidden]) {
+  position: fixed;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: var(--layout-z-index-navbar);
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--theme-color-border);
+  border-radius: 999px;
+  background: var(--theme-color-background-content);
+  box-shadow: var(--theme-shadow-floating);
+}
+
+@media (max-width: 924px) {
+  #appearance-view-switcher:not([hidden]) {
+    bottom: calc(var(--layout-tabbar-height) + 24px + env(safe-area-inset-bottom));
+  }
+}
+
+#appearance-view-switcher button {
+  min-height: 36px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  color: var(--theme-color-text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+#appearance-view-switcher button[aria-pressed="true"] {
+  color: var(--theme-color-text-primary);
+  background: color-mix(in srgb, var(--theme-color-accent) 15%, var(--theme-color-background-content));
+}
+
+#appearance-view-switcher button:focus-visible {
+  outline: 2px solid var(--theme-color-accent);
+  outline-offset: 1px;
+}
+
+.appearance-swatch {
+  display: none;
+}
+
+#appearance-theme-grid[data-compact] {
+  row-gap: 8px;
+}
+
+[data-compact] .b3kUJqmM {
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: center;
+  min-height: 58px;
+  padding: 8px;
+  border: 1px solid var(--theme-color-border-over-background);
+  border-radius: 8px;
+}
+
+[data-compact] .b3kUJqmM:hover {
+  background-color: var(--theme-color-background-secondary);
+}
+
+[data-compact] .b3kUJqmM[aria-pressed="true"] {
+  border-color: var(--theme-color-accent);
+  box-shadow: inset 0 0 0 1px var(--theme-color-accent);
+}
+
+[data-compact] .mADoi96g {
+  display: none;
+}
+
+[data-compact] .appearance-swatch {
+  display: block;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--theme-color-border);
+  border-radius: 50%;
+  background-color: var(--theme-color-accent);
+}
+
+[data-compact] .K0bZe5rs {
+  color: var(--theme-color-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
