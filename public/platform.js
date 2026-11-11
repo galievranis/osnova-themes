@@ -23,6 +23,16 @@
   }
 
   const settings = document.documentElement.dataset.previewSettings;
+  const chatSearch = document.querySelector('[data-preview-chat-search]');
+  if (chatSearch) {
+    chatSearch.addEventListener('input', () => {
+      const query = chatSearch.value.trim().toLocaleLowerCase('ru');
+      for (const row of document.querySelectorAll('.channels .Y34HLSgK')) {
+        row.hidden = !row.textContent.toLocaleLowerCase('ru').includes(query);
+      }
+    });
+  }
+
   if (settings === 'checkboxes') {
     document.addEventListener('change', event => {
       if (!event.target.matches('.notifications-settings-checkboxes .checkbox__input')) return;
