@@ -33,6 +33,36 @@
     });
   }
 
+  const chatComposer = document.querySelector('[data-preview-messenger="new-chat"] .BnnSXmZM');
+  if (chatComposer) {
+    const input = chatComposer.querySelector('textarea[name="message"]');
+    const send = chatComposer.querySelector('.sMjwVEgj');
+    const stream = document.querySelector('.ZpJXSokP');
+    const outgoing = stream.querySelector('[data-preview-outgoing]');
+    const updateSend = () => { send.disabled = !input.value.trim(); };
+
+    input.addEventListener('input', updateSend);
+    window.addEventListener('pageshow', updateSend);
+    updateSend();
+
+    send.addEventListener('click', () => {
+      const message = input.value.trim();
+      if (!message) return;
+
+      const row = outgoing.cloneNode(true);
+      const body = row.querySelector('.Uq1mKlbk');
+      body.replaceChildren(message, body.querySelector('.wgjd82GI'));
+      row.querySelector('time').textContent = new Date().toLocaleTimeString('ru-RU', {
+        hour: '2-digit', minute: '2-digit',
+      });
+      stream.append(row);
+      stream.scrollTop = stream.scrollHeight;
+      input.value = '';
+      updateSend();
+      input.focus({ preventScroll: true });
+    });
+  }
+
   if (settings === 'checkboxes') {
     document.addEventListener('change', event => {
       if (!event.target.matches('.notifications-settings-checkboxes .checkbox__input')) return;
