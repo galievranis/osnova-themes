@@ -1,7 +1,7 @@
 [
   {
     "id": "mint",
-    "name": "Мята",
+    "name": "Деньги",
     "source": "classic",
     "light": {
       "--theme-color-background": "#ECF6F0",
@@ -257,6 +257,62 @@
       "--theme-color-backdrop-pattern": "rgb(234, 193, 157)",
       "--theme-opacity-backdrop-pattern": "10%",
       "--theme-size-backdrop-pattern": "160px"
+    }
+  },
+  {
+    "id": "future",
+    "name": "Будущее",
+    "source": "classic",
+    "light": {
+      "--theme-color-background": "#EBF1FC",
+      "--theme-color-background-content": "#FCFDFF",
+      "--theme-color-background-secondary": "#F1F4FC",
+      "--theme-color-border": "#D9E2F4",
+      "--theme-color-border-over-background": "#C3D1EA",
+      "--theme-color-brand-header": "#BDEBFF",
+      "--theme-color-brand-primary-bright": "#6652D4",
+      "--theme-color-accent": "#5435C6",
+      "--theme-color-accent-strong": "#4428AA",
+      "--theme-color-accent-strongest": "#36218A",
+      "--theme-color-accent-subtle": "#CDC3FF",
+      "--theme-color-accent-subtlest": "#EEE9FF",
+      "--theme-color-brand-primary": "var(--theme-color-accent)",
+      "--theme-color-brand-background": "var(--theme-color-background)",
+      "--theme-color-brand-distribution-background": "var(--theme-color-background-secondary)",
+      "--theme-color-brand-content-background": "var(--theme-color-brand-header)",
+      "--theme-color-brand-icon": "var(--theme-color-accent-subtle)",
+      "--theme-color-background-selected": "var(--theme-color-accent-subtlest)",
+      "--theme-color-background-selected-hover": "var(--theme-color-accent-subtle)",
+      "--theme-color-background-highlight": "var(--theme-color-background-secondary)",
+      "--theme-color-filter-field-background-selected": "var(--theme-color-background-highlight)",
+      "--theme-color-popover-background": "var(--theme-color-background-content)",
+      "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)"
+    },
+    "dark": {
+      "--theme-color-background": "#12152A",
+      "--theme-color-background-content": "#1D2139",
+      "--theme-color-background-secondary": "#252B46",
+      "--theme-color-border": "#363E60",
+      "--theme-color-border-over-background": "#414C72",
+      "--theme-color-brand-header": "#312C62",
+      "--theme-color-brand-primary-bright": "#90E7FF",
+      "--theme-color-accent": "#83DBFF",
+      "--theme-color-accent-strong": "#A0E6FF",
+      "--theme-color-accent-strongest": "#BBEEFF",
+      "--theme-color-accent-subtle": "#3E5B7D",
+      "--theme-color-accent-subtlest": "#263C57",
+      "--theme-color-brand-primary": "var(--theme-color-accent)",
+      "--theme-color-brand-background": "var(--theme-color-background)",
+      "--theme-color-brand-distribution-background": "var(--theme-color-background-secondary)",
+      "--theme-color-brand-content-background": "var(--theme-color-brand-header)",
+      "--theme-color-brand-icon": "var(--theme-color-accent-subtle)",
+      "--theme-color-background-selected": "var(--theme-color-accent-subtlest)",
+      "--theme-color-background-selected-hover": "var(--theme-color-accent-subtle)",
+      "--theme-color-background-highlight": "var(--theme-color-background-secondary)",
+      "--theme-color-filter-field-background-selected": "var(--theme-color-background-highlight)",
+      "--theme-color-popover-background": "var(--theme-color-background-content)",
+      "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
+      "--theme-color-on-fill": "#10233A"
     }
   }
 ]

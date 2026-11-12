@@ -8,15 +8,13 @@ from import_preview_screens import archive_resources, prepare_page, read_archive
 THEMES = (
     ('classic', 'Классика'),
     ('contrast', 'Контрастная'),
-    ('lime', 'Лайм'),
-    ('garnet', 'Гранат'),
-    ('iris', 'Ирис'),
-    ('sapphire', 'Сапфир'),
-    ('mint', 'Мята'),
-    ('peach', 'Персик'),
+    ('lime', 'Транспорт'),
+    ('sapphire', 'Легенды'),
+    ('mint', 'Деньги'),
     ('filippovost', 'Филипповость'),
     ('gaming', 'Игровой'),
     ('cats', 'Коты'),
+    ('future', 'Будущее'),
     ('custom', 'Своя тема'),
 )
 
@@ -42,10 +40,10 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=33')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=34')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=34'
-    page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg',
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=35'
+    page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=2',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
     desktop_header = page.select_one('.bar--top > .header')

@@ -21,7 +21,7 @@
   const [catalog, extraThemes, source] = await Promise.all([
     load('themes.json').then(response => response.json()),
     load('appearance-themes.json').then(response => response.json()),
-    load('theme-preview.svg').then(response => response.text()),
+    load('theme-preview.svg?v=2').then(response => response.text()),
   ]);
   const template = new DOMParser().parseFromString(source, 'image/svg+xml').documentElement;
   const themes = new Map([...catalog, ...extraThemes].map(theme => [theme.id, theme]));

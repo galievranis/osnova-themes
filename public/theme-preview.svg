@@ -1,28 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg fill="none" height="116" viewBox="0 0 192 116" width="192" xmlns="http://www.w3.org/2000/svg">
+<svg width="192" height="116" viewBox="0 0 192 116" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_36062_20887)">
-<rect data-token="--theme-color-background-content" fill="white" height="116" width="192"/>
-<path d="M16 24C16 19.5817 19.5817 16 24 16H192V116H16V24Z" data-token="--theme-color-background" fill="#F2F2F2"/>
-<mask fill="black" height="102" id="stroke0_36062_20887" maskUnits="userSpaceOnUse" width="178" x="15" y="15">
-<rect fill="white" height="102" width="178" x="15" y="15"/>
-<path d="M16 24C16 19.5817 19.5817 16 24 16H192V116H16V24Z"/>
-</mask>
-<path d="M192 16H24C19.5817 16 16 19.5817 16 24V116H192V16Z" data-paint="stroke" data-token="--theme-color-media-border" mask="url(#stroke0_36062_20887)" stroke="black" stroke-width="2"/>
-<path d="M16 24C16 19.5817 19.5817 16 24 16H192V52H16V24Z" data-token="--theme-color-brand-header" fill="#FFE5EB"/>
-<path clip-rule="evenodd" d="M43.2729 33.2922C44.6959 33.2922 45.7671 32.6919 46.5574 31.648L45.5019 30.8326C44.9663 31.5418 44.1551 31.9482 43.2729 31.9482C41.7291 31.9482 40.6107 30.6759 40.6107 29.1141C40.6107 27.5523 41.7108 26.2083 43.3175 26.2083C44.0317 26.2083 44.5358 26.3783 44.9768 26.6545V28.0277H46.3053V26.025L46.0507 25.8232C45.3208 25.2415 44.205 24.9333 43.2729 24.9333C40.994 24.9333 39.1404 26.8086 39.1404 29.1141C39.1404 31.4169 40.994 33.2922 43.2729 33.2922ZM46.0296 41.5394L45.9824 39.6137V34.9177H43.2125V36.2617H44.583V39.4491C44.583 40.8223 43.5459 41.7944 42.501 41.7944C41.4561 41.7944 40.91 41.0613 40.91 39.6881V34.9177H38.3213V36.2617H39.5106V39.9218C39.5106 41.7838 40.5424 43.0667 42.3829 43.0667C43.4409 43.0667 44.2469 42.4744 44.7274 41.558H44.7484L44.9374 42.8383H47.0667V41.5421H46.0296V41.5394ZM38.8332 25.1299H36.5255L34.517 31.0292H34.4855L32.4875 25.1299H30.0274V26.4739H31.4111L33.7923 33.1992H35.0578V33.1966L37.5415 26.4739H38.8332V25.1299ZM27.8667 42.8545H29.2346V41.4704H27.8667V42.8545ZM33.1518 36.4769H33.136L33.0494 34.9177H30.6077V36.1422H31.9073V41.5394H30.6077V42.8356H36.6436V41.5633H33.283V38.3069C33.4353 37.1276 34.3096 36.1209 35.5016 36.1209H35.5226L35.4989 37.3268H36.8274V34.8938H35.7772C34.5748 34.8912 33.6821 35.5499 33.1518 36.4769Z" data-token="--theme-color-text-primary" fill="black" fill-rule="evenodd"/>
-<path d="M24 66C24 62.6863 26.6863 60 30 60H192V116H24V66Z" data-token="--theme-color-background-content" fill="white"/>
-<mask fill="black" height="58" id="stroke1_36062_20887" maskUnits="userSpaceOnUse" width="170" x="23" y="59">
-<rect fill="white" height="58" width="170" x="23" y="59"/>
-<path d="M24 66C24 62.6863 26.6863 60 30 60H192V116H24V66Z"/>
-</mask>
-<path d="M192 60H30C26.6863 60 24 62.6863 24 66V116H192V60Z" data-paint="stroke" data-token="--theme-color-background" mask="url(#stroke1_36062_20887)" stroke="#F2F2F2" stroke-width="2"/>
-<rect data-token="--theme-color-text-primary" fill="black" height="6" opacity="0.1" rx="3" width="148" x="34" y="70"/>
-<rect data-token="--theme-color-text-primary" fill="black" height="6" opacity="0.1" rx="3" width="97" x="34" y="82"/>
-<rect data-token="--theme-color-accent" fill="#0A5DD8" height="12" rx="6" width="48" x="34" y="94"/>
+<rect data-token="--theme-color-background-content" width="192" height="116" fill="white"/>
+<path data-token="--theme-color-background" d="M0 8C0 3.58172 3.58172 0 8 0H192V116H0V8Z" fill="#F2F2F2"/>
+<path data-token="--theme-color-brand-header" d="M0 0H192V36H0V0Z" fill="#FFE5EB"/>
+<path data-token="--theme-color-text-primary" d="M27.2729 17.2922C28.6959 17.2922 29.7671 16.6919 30.5574 15.648L29.5019 14.8326C28.9663 15.5418 28.1551 15.9482 27.2729 15.9482C25.7291 15.9482 24.6107 14.6759 24.6107 13.1141C24.6107 11.5523 25.7108 10.2083 27.3175 10.2083C28.0317 10.2083 28.5358 10.3783 28.9768 10.6545V12.0277H30.3053V10.025L30.0507 9.82315C29.3208 9.24146 28.205 8.93335 27.2729 8.93335C24.994 8.93335 23.1404 10.8086 23.1404 13.1141C23.1404 15.4169 24.994 17.2922 27.2729 17.2922ZM30.0296 25.5394L29.9824 23.6137V18.9177H27.2125V20.2617H28.583V23.4491C28.583 24.8223 27.5459 25.7944 26.501 25.7944C25.4561 25.7944 24.91 25.0613 24.91 23.6881V18.9177H22.3213V20.2617H23.5106V23.9218C23.5106 25.7838 24.5424 27.0667 26.3829 27.0667C27.4409 27.0667 28.2469 26.4744 28.7274 25.558H28.7484L28.9374 26.8383H31.0667V25.5421H30.0296V25.5394ZM22.8332 9.12995H20.5255L18.517 15.0292H18.4855L16.4875 9.12995H14.0274V10.4739H15.4111L17.7923 17.1992H19.0578V17.1966L21.5415 10.4739H22.8332V9.12995ZM11.8667 26.8545H13.2346V25.4704H11.8667V26.8545ZM17.1518 20.4769H17.136L17.0494 18.9177H14.6077V20.1422H15.9073V25.5394H14.6077V26.8356H20.6436V25.5633H17.283V22.3069C17.4353 21.1276 18.3096 20.1209 19.5016 20.1209H19.5226L19.4989 21.3268H20.8274V18.8938H19.7772C18.5748 18.8912 17.6821 19.5499 17.1518 20.4769Z" fill-rule="evenodd" clip-rule="evenodd" fill="black"/>
+<path data-token="--theme-color-background-content" d="M10 52C10 48.6863 12.6863 46 16 46H192V116H10V52Z" fill="white"/>
+<rect data-token="--theme-color-text-primary" opacity="0.1" x="20" y="56" width="162" height="6" rx="3" fill="black"/>
+<rect data-token="--theme-color-text-primary" opacity="0.1" x="20" y="69" width="162" height="6" rx="3" fill="black"/>
+<rect data-token="--theme-color-text-primary" opacity="0.1" x="20" y="82" width="97" height="6" rx="3" fill="black"/>
+<rect data-token="--theme-color-accent" x="20" y="95" width="48" height="12" rx="6" fill="#0A5DD8"/>
 </g>
 <defs>
 <clipPath id="clip0_36062_20887">
-<rect fill="white" height="116" width="192"/>
+<rect width="192" height="116" fill="white"/>
 </clipPath>
 </defs>
 </svg>

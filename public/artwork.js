@@ -1,6 +1,6 @@
 (async()=>{
 const $=s=>document.querySelector(s),frame=$('#preview');let name=$('#themes')?.selectedOptions[0]?.textContent||'theme';
-const source=await fetch('theme-preview.svg').then(r=>r.text());
+const source=await fetch('theme-preview.svg?v=2').then(r=>r.text());
 function artwork(){const svg=new DOMParser().parseFromString(source,'image/svg+xml').documentElement,root=frame.contentDocument?.documentElement;if(!root)return svg;const cs=frame.contentWindow.getComputedStyle(root);for(const el of svg.querySelectorAll('[data-token]')){el.setAttribute(el.dataset.paint||'fill',cs.getPropertyValue(el.dataset.token).trim()||'transparent');el.removeAttribute('data-token');el.removeAttribute('data-paint')}return svg}
 function render(){$('#theme-artwork-image').replaceChildren(document.importNode(artwork(),true))}
 addEventListener('theme-updated',e=>{name=e.detail.name;render()});frame.addEventListener('load',render);render();
