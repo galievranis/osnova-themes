@@ -210,7 +210,7 @@
   cursor: pointer;
 }
 
-.appearance-custom-pattern {
+.appearance-custom-pattern:not([hidden]) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
@@ -476,4 +476,47 @@
     background: var(--appearance-accent-outline);
     box-shadow: 0 0 0 1px var(--appearance-accent-outline);
   }
+}
+
+
+[data-appearance-image] > body {
+  background-image: var(--appearance-custom-image);
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+#appearance-background-modes,
+#appearance-custom-image:not([hidden]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+#appearance-background-modes button,
+#appearance-custom-image button {
+  padding: 5px 11px;
+  min-height: 34px;
+  border: 1px solid var(--appearance-control-border);
+  border-radius: 10px;
+  background: var(--theme-color-background-content);
+  color: var(--theme-color-text-primary);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+#appearance-background-modes button[aria-pressed="true"] {
+  border-color: var(--appearance-accent-outline);
+  background-color: var(--theme-color-accent-subtlest);
+  color: var(--appearance-selected-text);
+}
+
+#appearance-background-modes button:focus-visible,
+#appearance-custom-image button:focus-visible {
+  outline: 2px solid var(--appearance-accent-outline);
+  outline-offset: 2px;
+}
+
+#appearance-image-status {
+  font-size: 14px;
 }

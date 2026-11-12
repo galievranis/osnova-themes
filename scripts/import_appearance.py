@@ -40,9 +40,9 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=34')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=35')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=35'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=36'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=2',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
@@ -79,7 +79,18 @@ def main():
         field.append(page.new_tag('input', type='color', attrs={'data-theme-color': '--theme-color-' + token}))
         colors.append(field)
     custom.append(colors)
-    pattern_controls = page.new_tag('div', attrs={'class': 'appearance-custom-pattern'})
+    background_modes = page.new_tag('div', id='appearance-background-modes', role='group',
+                                    attrs={'aria-label': 'Тип фона'})
+    for mode, label in (('pattern', 'Узор'), ('image', 'Картинка')):
+        button = page.new_tag('button', type='button', attrs={
+            'data-background-mode': mode, 'aria-pressed': str(mode == 'pattern').lower(),
+            'aria-controls': 'appearance-custom-image' if mode == 'image' else 'appearance-pattern-controls',
+        })
+        button.string = label
+        background_modes.append(button)
+    custom.append(background_modes)
+    pattern_controls = page.new_tag('div', id='appearance-pattern-controls',
+                                    attrs={'class': 'appearance-custom-pattern'})
     patterns = page.new_tag('select', id='appearance-custom-pattern', attrs={'aria-label': 'Узор фона'})
     for value, label in (('', 'Без узора'), ('gaming', 'Игровой'), ('cats', 'Коты'), ('filippovost', 'Клоуны')):
         option = page.new_tag('option', value=value)
@@ -108,6 +119,15 @@ def main():
         control.extend([title, output, slider])
         sliders.append(control)
     custom.append(sliders)
+    image_controls = page.new_tag('div', id='appearance-custom-image', hidden='')
+    upload = page.new_tag('button', id='appearance-image-upload', type='button')
+    upload.string = 'Загрузить картинку'
+    remove = page.new_tag('button', id='appearance-image-remove', type='button', hidden='')
+    remove.string = 'Удалить'
+    image_file = page.new_tag('input', id='appearance-image-file', type='file', accept='image/*', hidden='')
+    status = page.new_tag('span', id='appearance-image-status', role='status')
+    image_controls.extend([upload, remove, image_file, status])
+    custom.append(image_controls)
     grid.insert_after(custom)
 
     view_switcher = page.new_tag('div', id='appearance-view-switcher', role='group', hidden='',

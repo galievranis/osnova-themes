@@ -17,6 +17,13 @@
   const patternInputs = [...patternSliders.querySelectorAll('input')];
   const patternSettings = {};
   const patternUnits = { opacity: '%', size: 'px' };
+  const backgroundButtons = [...document.querySelectorAll('[data-background-mode]')];
+  const patternControls = document.getElementById('appearance-pattern-controls');
+  const imageControls = document.getElementById('appearance-custom-image');
+  const imageInput = document.getElementById('appearance-image-file');
+  const imageUpload = document.getElementById('appearance-image-upload');
+  const imageRemove = document.getElementById('appearance-image-remove');
+  const imageStatus = document.getElementById('appearance-image-status');
   const radios = [...document.querySelectorAll('input[name="color-mode"]')];
   const [catalog, extraThemes, source] = await Promise.all([
     load('themes.json').then(response => response.json()),
@@ -42,6 +49,34 @@
     ? preferences.mode : 'light';
 
   let compactView = preferences?.compactView === true;
+
+  let backgroundMode = preferences?.backgroundMode === 'image' ? 'image' : 'pattern';
+  let backgroundImage = null;
+  let imageRevision = 0;
+  let imageDatabase;
+
+  function imageStore(action, file) {
+    imageDatabase ??= new Promise((resolve, reject) => {
+      const request = indexedDB.open('osnova-appearance-assets', 1);
+      request.onupgradeneeded = () => request.result.createObjectStore('images');
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    return imageDatabase.then(db => new Promise((resolve, reject) => {
+      const transaction = db.transaction('images', action === 'read' ? 'readonly' : 'readwrite');
+      const store = transaction.objectStore('images');
+      const key = 'custom-background';
+      const request = action === 'read' ? store.get(key) :
+        action === 'remove' ? store.delete(key) : store.put(file, key);
+      transaction.oncomplete = () => resolve(request.result);
+      transaction.onabort = () => reject(transaction.error);
+    }));
+  }
+
+  function replaceBackgroundImage(url) {
+    if (backgroundImage) URL.revokeObjectURL(backgroundImage);
+    backgroundImage = url;
+  }
 
   const customPalette = {};
   const previousMode = colorMode();
@@ -331,9 +366,16 @@
       context.fillStyle = style.getPropertyValue(input.dataset.themeColor).trim();
       input.value = context.fillStyle;
     }
+    const showImage = backgroundMode === 'image';
+    for (const button of backgroundButtons) {
+      button.setAttribute('aria-pressed', String(button.dataset.backgroundMode === backgroundMode));
+    }
+    imageControls.hidden = !showImage;
+    imageRemove.hidden = !backgroundImage;
+    patternControls.hidden = showImage;
     patternSelect.value = customPalette.pattern ?? '';
     patternColor.hidden = !patternSelect.value;
-    patternSliders.hidden = !patternSelect.value;
+    patternSliders.hidden = showImage || !patternSelect.value;
     if (patternSliders.hidden) return;
     for (const input of patternInputs) {
       const property = input.dataset.patternProperty;
@@ -356,7 +398,14 @@
     const nativeScheme = custom ? (luminance(surface) < 0.179 ? 'dark' : 'light') : mode;
     root.dataset.colorMode = custom ? 'light' : mode;
     root.toggleAttribute('data-custom-palette', custom);
-    const pattern = patternFor(selectedTheme);
+    const useImage = custom && backgroundMode === 'image';
+    const pattern = useImage ? null : patternFor(selectedTheme);
+    if (useImage && backgroundImage) {
+      root.style.setProperty('--appearance-custom-image', `url("${backgroundImage}")`);
+    } else {
+      root.style.removeProperty('--appearance-custom-image');
+    }
+    root.toggleAttribute('data-appearance-image', Boolean(useImage && backgroundImage));
     root.toggleAttribute('data-appearance-pattern', Boolean(pattern));
     if (pattern) root.style.setProperty('--appearance-pattern-image', `url('./${pattern}')`);
     else root.style.removeProperty('--appearance-pattern-image');
@@ -389,7 +438,7 @@
   function save() {
     apply();
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, compactView, customPalette, patternSettings }));
+      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, compactView, customPalette, patternSettings, backgroundMode }));
     } catch {
       // Selection still works when browser storage is unavailable.
     }
@@ -423,6 +472,57 @@
       save();
     });
   }
+  for (const button of backgroundButtons) {
+    button.addEventListener('click', () => {
+      backgroundMode = button.dataset.backgroundMode;
+      save();
+    });
+  }
+
+  imageUpload.addEventListener('click', () => imageInput.click());
+  imageInput.addEventListener('change', async () => {
+    const file = imageInput.files[0];
+    imageInput.value = '';
+    if (!file) return;
+    imageUpload.disabled = true;
+    imageRemove.disabled = true;
+    imageStatus.textContent = '';
+    const url = URL.createObjectURL(file);
+    try {
+      const image = new Image();
+      image.src = url;
+      await image.decode();
+      imageRevision++;
+      replaceBackgroundImage(url);
+      apply();
+      await imageStore('write', file).catch(() => {
+        imageStatus.textContent = 'Картинка доступна до перезагрузки страницы.';
+      });
+    } catch {
+      URL.revokeObjectURL(url);
+      imageStatus.textContent = 'Не удалось открыть картинку.';
+    } finally {
+      imageUpload.disabled = false;
+      imageRemove.disabled = false;
+    }
+  });
+
+  imageRemove.addEventListener('click', async () => {
+    imageRevision++;
+    replaceBackgroundImage(null);
+    imageStatus.textContent = '';
+    apply();
+    await imageStore('remove').catch(() => {
+      imageStatus.textContent = 'Не удалось удалить сохранённую картинку.';
+    });
+  });
+
+  imageStore('read').then(file => {
+    if (!file || imageRevision) return;
+    replaceBackgroundImage(URL.createObjectURL(file));
+    apply();
+  }).catch(() => {});
+
   viewSwitcher.hidden = false;
   systemMode.addEventListener('change', () => {
     if (selectedMode === 'auto') apply();
