@@ -42,9 +42,9 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=28')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=33')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=29'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=34'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
@@ -75,21 +75,13 @@ def main():
     heading.string = 'Настройки своей темы'
     custom.append(heading)
     colors = page.new_tag('div', attrs={'class': 'appearance-custom-colors'})
-    for token, label in (
-        ('background', 'Фон страницы'), ('background-content', 'Фон карточек'),
-        ('brand-header', 'Шапка'), ('header-icon', 'Логотип и иконки шапки'),
-        ('accent', 'Акцент'), ('text-primary', 'Основной текст'),
-    ):
+    for token, label in (('background', 'Фон страницы'), ('accent', 'Акцент')):
         field = page.new_tag('label')
         field.append(label)
         field.append(page.new_tag('input', type='color', attrs={'data-theme-color': '--theme-color-' + token}))
         colors.append(field)
     custom.append(colors)
     pattern_controls = page.new_tag('div', attrs={'class': 'appearance-custom-pattern'})
-    pattern_color = page.new_tag('label', hidden='')
-    pattern_color.append('Цвет узора')
-    pattern_color.append(page.new_tag('input', type='color', value='#000000', disabled='',
-                                     attrs={'data-theme-color': '--theme-color-backdrop-pattern'}))
     patterns = page.new_tag('select', id='appearance-custom-pattern', attrs={'aria-label': 'Узор фона'})
     for value, label in (('', 'Без узора'), ('gaming', 'Игровой'), ('cats', 'Коты'), ('filippovost', 'Клоуны')):
         option = page.new_tag('option', value=value)
@@ -97,8 +89,27 @@ def main():
         patterns.append(option)
     pattern_select = page.new_tag('div', attrs={'class': 'appearance-pattern-select'})
     pattern_select.append(patterns)
+    pattern_color = page.new_tag('label', id='appearance-pattern-color', hidden='')
+    pattern_color.append('Цвет узора')
+    pattern_color.append(page.new_tag('input', type='color',
+                                     attrs={'data-theme-color': '--theme-color-backdrop-pattern'}))
     pattern_controls.extend([pattern_select, pattern_color])
     custom.append(pattern_controls)
+
+    sliders = page.new_tag('div', id='appearance-pattern-sliders', hidden='')
+    for prop, label, minimum, maximum in (
+        ('opacity', 'Интенсивность цвета', '0', '100'), ('size', 'Размер узора', '32', '400'),
+    ):
+        control = page.new_tag('div', attrs={'class': 'appearance-pattern-slider'})
+        slider_id = 'appearance-pattern-' + prop
+        title = page.new_tag('label', attrs={'for': slider_id})
+        title.string = label
+        output = page.new_tag('output', attrs={'for': slider_id, 'aria-hidden': 'true'})
+        slider = page.new_tag('input', id=slider_id, type='range', min=minimum, max=maximum,
+                              attrs={'data-pattern-property': prop})
+        control.extend([title, output, slider])
+        sliders.append(control)
+    custom.append(sliders)
     grid.insert_after(custom)
 
     view_switcher = page.new_tag('div', id='appearance-view-switcher', role='group', hidden='',

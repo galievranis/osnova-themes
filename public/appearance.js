@@ -11,8 +11,12 @@
   const viewTabs = [...viewSwitcher.querySelectorAll('button')];
   const customPanel = document.getElementById('appearance-custom');
   const colorInputs = [...customPanel.querySelectorAll('[data-theme-color]')];
-  const patternColorToken = '--theme-color-backdrop-pattern';
   const patternSelect = document.getElementById('appearance-custom-pattern');
+  const patternColor = document.getElementById('appearance-pattern-color');
+  const patternSliders = document.getElementById('appearance-pattern-sliders');
+  const patternInputs = [...patternSliders.querySelectorAll('input')];
+  const patternSettings = {};
+  const patternUnits = { opacity: '%', size: 'px' };
   const radios = [...document.querySelectorAll('input[name="color-mode"]')];
   const [catalog, extraThemes, source] = await Promise.all([
     load('themes.json').then(response => response.json()),
@@ -53,6 +57,14 @@
   }
   if ([...patternSelect.options].some(option => option.value === savedPalette?.pattern)) {
     customPalette.pattern = savedPalette.pattern;
+  }
+
+  for (const input of patternInputs) {
+    const property = input.dataset.patternProperty;
+    const saved = preferences?.patternSettings?.[property];
+    if (Number.isInteger(saved) && saved >= Number(input.min) && saved <= Number(input.max)) {
+      patternSettings[property] = saved;
+    }
   }
 
   const themeStyle = document.createElement('style');
@@ -173,6 +185,34 @@
     return readableColor(mixHex(background, foreground, amount), foreground, 4.5);
   }
 
+  function interactiveColors(background, foreground, amount) {
+    const surface = mixHex(background, foreground, amount);
+    return { surface, text: readableColor(foreground, surface, 4.5) };
+  }
+
+  function customSurfaces(tokens) {
+    const page = resolveHex(tokens, '--theme-color-background');
+    const accent = resolveHex(tokens, '--theme-color-accent');
+    const dark = luminance(page) < 0.179;
+    const card = dark ? '#242424' : '#ffffff';
+    const header = mixHex(card, accent, dark ? 0.18 : 0.24);
+    const ink = surface => luminance(surface) < 0.179 ? '#f5f5f5' : '#171717';
+    return {
+      '--theme-color-background-content': card,
+      '--theme-color-brand-header': header,
+      '--theme-color-brand-background': 'var(--theme-color-background-content)',
+      '--theme-color-brand-content-background': 'var(--theme-color-brand-header)',
+      '--theme-color-brand-distribution-background': 'var(--theme-color-brand-header)',
+      '--theme-color-brand-primary': 'var(--theme-color-accent)',
+      '--theme-color-brand-primary-bright': 'var(--theme-color-accent)',
+      '--theme-color-brand-icon': 'var(--theme-color-accent-subtle)',
+      '--theme-color-popover-background': 'var(--theme-color-background-content)',
+      '--theme-color-header-icon': ink(header),
+      '--theme-color-text-primary': ink(card),
+      '--theme-color-backdrop-pattern': tokens['--theme-color-backdrop-pattern'] ?? ink(page),
+    };
+  }
+
   function customContrast(tokens) {
     const get = key => resolveHex(tokens, '--theme-color-' + key);
     const page = get('background');
@@ -192,6 +232,8 @@
     const headerState = amount => interactiveSurface(header, headerText, amount);
     const pageState = amount => interactiveSurface(page, pageText, amount);
     const selectedText = readableColor(text, selectedSurface, 4.5);
+    const outlineHover = interactiveColors(card, text, 0.08);
+    const outlinePressed = interactiveColors(card, text, 0.14);
     return {
       '--theme-color-text-primary': text,
       '--theme-color-text-secondary': secondary(text, card),
@@ -229,6 +271,10 @@
       '--appearance-header-focus': readableColor(accent, header, 3),
       '--appearance-page-text-secondary': secondary(pageText, page),
       '--appearance-control-border': controlBorder,
+      '--appearance-outline-hover': outlineHover.surface,
+      '--appearance-outline-hover-text': outlineHover.text,
+      '--appearance-outline-pressed': outlinePressed.surface,
+      '--appearance-outline-pressed-text': outlinePressed.text,
       '--appearance-accent-outline': readableColor(accent, card, 3),
       '--appearance-selected-text': selectedText,
       '--appearance-selected-hover': interactiveSurface(selectedSurface, selectedText, 0.06),
@@ -246,8 +292,8 @@
     };
     if (custom) {
       const { pattern, ...colors } = customPalette;
-      tokens[patternColorToken] = '#000000';
       Object.assign(tokens, colors);
+      Object.assign(tokens, customSurfaces(tokens));
       Object.assign(tokens, customContrast(tokens));
       const accentMix = (percent, base) =>
         `color-mix(in srgb, var(--theme-color-accent) ${percent}%, ${base})`;
@@ -262,9 +308,12 @@
         '--theme-color-filter-field-background-selected': 'var(--theme-color-background-highlight)',
       });
       const patternTokens = themes.get(pattern)?.modes.light;
-      for (const property of ['opacity', 'size']) {
-        const token = `--theme-${property}-backdrop-pattern`;
-        if (patternTokens) tokens[token] = patternTokens[token];
+      if (patternTokens) {
+        for (const [property, unit] of Object.entries(patternUnits)) {
+          const token = `--theme-${property}-backdrop-pattern`;
+          tokens[token] = patternSettings[property] === undefined
+            ? patternTokens[token] : `${patternSettings[property]}${unit}`;
+        }
       }
     }
     return tokens;
@@ -281,12 +330,21 @@
     for (const input of colorInputs) {
       context.fillStyle = style.getPropertyValue(input.dataset.themeColor).trim();
       input.value = context.fillStyle;
-      if (input.dataset.themeColor === patternColorToken) {
-        input.disabled = !customPalette.pattern;
-        input.closest('label').hidden = input.disabled;
-      }
     }
     patternSelect.value = customPalette.pattern ?? '';
+    patternColor.hidden = !patternSelect.value;
+    patternSliders.hidden = !patternSelect.value;
+    if (patternSliders.hidden) return;
+    for (const input of patternInputs) {
+      const property = input.dataset.patternProperty;
+      input.value = Number.parseFloat(style.getPropertyValue(`--theme-${property}-backdrop-pattern`));
+      const min = Number(input.min);
+      const progress = (input.valueAsNumber - min) / (Number(input.max) - min) * 100;
+      input.style.setProperty('--appearance-slider-progress', `${progress}%`);
+      const value = property === 'size' ? `${input.value} px` : `${input.value}%`;
+      input.parentElement.querySelector('output').value = value;
+      input.setAttribute('aria-valuetext', value);
+    }
   }
 
   function apply() {
@@ -331,7 +389,7 @@
   function save() {
     apply();
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, compactView, customPalette }));
+      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, compactView, customPalette, patternSettings }));
     } catch {
       // Selection still works when browser storage is unavailable.
     }
@@ -359,6 +417,12 @@
     customPalette.pattern = patternSelect.value;
     save();
   });
+  for (const input of patternInputs) {
+    input.addEventListener('input', () => {
+      patternSettings[input.dataset.patternProperty] = input.valueAsNumber;
+      save();
+    });
+  }
   viewSwitcher.hidden = false;
   systemMode.addEventListener('change', () => {
     if (selectedMode === 'auto') apply();
