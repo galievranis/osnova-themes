@@ -9,6 +9,10 @@
   const grid = document.getElementById('appearance-theme-grid');
   const viewSwitcher = document.getElementById('appearance-view-switcher');
   const viewTabs = [...viewSwitcher.querySelectorAll('button')];
+  const customPanel = document.getElementById('appearance-custom');
+  const colorInputs = [...customPanel.querySelectorAll('[data-theme-color]')];
+  const patternColorToken = '--theme-color-backdrop-pattern';
+  const patternSelect = document.getElementById('appearance-custom-pattern');
   const radios = [...document.querySelectorAll('input[name="color-mode"]')];
   const [catalog, extraThemes, source] = await Promise.all([
     load('themes.json').then(response => response.json()),
@@ -35,10 +39,31 @@
 
   let compactView = preferences?.compactView === true;
 
+  const customPalette = {};
+  const previousMode = colorMode();
+  const previousPalette = preferences?.customModes?.[previousMode];
+  const otherPalette = preferences?.customModes?.[previousMode === 'light' ? 'dark' : 'light'];
+  const savedPalette = preferences?.customPalette ??
+    (Object.keys(previousPalette ?? {}).length ? previousPalette : otherPalette);
+  for (const input of colorInputs) {
+    const token = input.dataset.themeColor;
+    if (typeof savedPalette?.[token] === 'string' && /^#[0-9a-f]{6}$/i.test(savedPalette[token])) {
+      customPalette[token] = savedPalette[token];
+    }
+  }
+  if ([...patternSelect.options].some(option => option.value === savedPalette?.pattern)) {
+    customPalette.pattern = savedPalette.pattern;
+  }
+
   const themeStyle = document.createElement('style');
   document.head.append(themeStyle);
 
   const patternedThemes = { gaming: 'gaming.svg', cats: 'cats.svg', filippovost: 'premium.svg' };
+
+  function patternFor(themeId) {
+    const patternId = themeId === 'custom' ? customPalette.pattern : themeId;
+    return Object.hasOwn(patternedThemes, patternId) ? patternedThemes[patternId] : null;
+  }
 
   function addArtworkPattern(svg, image) {
     const backdrop = svg.querySelector('path[data-token="--theme-color-background"]');
@@ -47,6 +72,21 @@
     pattern.classList.add('appearance-backdrop-pattern');
     pattern.style.setProperty('--appearance-pattern-image', `url('./${image}')`);
     backdrop.after(pattern);
+  }
+
+  function decorateCustomArtwork(svg) {
+    const gradient = document.createElementNS(svg.namespaceURI, 'linearGradient');
+    gradient.id = 'appearance-custom-gradient';
+    gradient.setAttribute('x2', '1');
+    gradient.setAttribute('y2', '.25');
+    for (const [offset, color] of [['0%', '#72a8fa'], ['57%', '#8855fa'], ['100%', '#c64df4']]) {
+      const stop = document.createElementNS(svg.namespaceURI, 'stop');
+      stop.setAttribute('offset', offset);
+      stop.setAttribute('stop-color', color);
+      gradient.append(stop);
+    }
+    svg.querySelector('defs').append(gradient);
+    svg.classList.add('appearance-custom-artwork');
   }
 
   function makeArtwork(themeId) {
@@ -68,7 +108,10 @@
     }
     const logo = svg.querySelector('path[data-token="--theme-color-text-primary"]');
     logo?.setAttribute('fill', 'var(--theme-color-header-icon, var(--theme-color-text-primary))');
-    if (Object.hasOwn(patternedThemes, themeId)) addArtworkPattern(svg, patternedThemes[themeId]);
+    if (themeId === 'custom') decorateCustomArtwork(svg);
+    else if (Object.hasOwn(patternedThemes, themeId)) {
+      addArtworkPattern(svg, patternFor(themeId));
+    }
     svg.classList.add('appearance-artwork');
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice');
     return svg;
@@ -89,28 +132,181 @@
     return { id, card, svg, swatch };
   });
 
-  function declarations(themeId, mode) {
-    const { grays, modes } = themes.get(themeId);
+  function resolveHex(tokens, token) {
+    const value = tokens[token];
+    const alias = /^var\((--[\w-]+)\)$/.exec(value);
+    return alias ? resolveHex(tokens, alias[1]) : value;
+  }
+
+  const channels = hex => hex.slice(1).match(/.{2}/g).map(channel => Number.parseInt(channel, 16));
+  const toHex = rgb => '#' + rgb.map(channel => channel.toString(16).padStart(2, '0')).join('');
+
+  function mixHex(from, to, amount) {
+    const target = channels(to);
+    return toHex(channels(from).map((value, i) => Math.round(value + (target[i] - value) * amount)));
+  }
+
+  function luminance(hex) {
+    const [red, green, blue] = channels(hex).map(channel => {
+      const value = channel / 255;
+      return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+  }
+
+  function readableColor(preferred, background, minimum) {
+    const backdrop = luminance(background);
+    const contrast = color => {
+      const foreground = luminance(color);
+      return (Math.max(backdrop, foreground) + 0.05) / (Math.min(backdrop, foreground) + 0.05);
+    };
+    if (contrast(preferred) >= minimum) return preferred;
+    const endpoint = contrast('#000000') >= contrast('#ffffff') ? '#000000' : '#ffffff';
+    for (let percent = 1; percent < 100; percent++) {
+      const candidate = mixHex(preferred, endpoint, percent / 100);
+      if (contrast(candidate) >= minimum) return candidate;
+    }
+    return endpoint;
+  }
+
+  function interactiveSurface(background, foreground, amount) {
+    return readableColor(mixHex(background, foreground, amount), foreground, 4.5);
+  }
+
+  function customContrast(tokens) {
+    const get = key => resolveHex(tokens, '--theme-color-' + key);
+    const page = get('background');
+    const card = get('background-content');
+    const accent = get('accent');
+    const header = get('brand-header');
+    const preferredText = get('text-primary');
+    const text = readableColor(preferredText, card, 4.5);
+    const pageText = readableColor(preferredText, page, 4.5);
+    const headerText = readableColor(get('header-icon'), header, 4.5);
+    const onAccent = readableColor(get('on-fill'), accent, 4.5);
+    const secondary = (foreground, background) =>
+      readableColor(mixHex(background, foreground, 0.72), background, 4.5);
+    const controlBorder = readableColor(mixHex(card, text, 0.32), card, 3);
+    const selectedSurface = mixHex(card, accent, 0.12);
+    const cardState = amount => interactiveSurface(card, text, amount);
+    const headerState = amount => interactiveSurface(header, headerText, amount);
+    const pageState = amount => interactiveSurface(page, pageText, amount);
+    const selectedText = readableColor(text, selectedSurface, 4.5);
+    return {
+      '--theme-color-text-primary': text,
+      '--theme-color-text-secondary': secondary(text, card),
+      '--theme-color-text-tertiary': secondary(text, card),
+      '--theme-color-header-icon': headerText,
+      '--theme-color-on-fill': onAccent,
+      '--theme-color-field-icon': onAccent,
+      '--theme-color-accent-strong': interactiveSurface(accent, onAccent, 0.12),
+      '--theme-color-accent-strongest': interactiveSurface(accent, onAccent, 0.20),
+      '--theme-color-border': mixHex(card, text, 0.18),
+      '--theme-color-border-over-background': mixHex(page, pageText, 0.24),
+      '--theme-color-field-border': controlBorder,
+      '--theme-color-field-border-opaque': controlBorder,
+      '--theme-color-check-background': mixHex(card, text, 0.06),
+      '--theme-color-background-secondary': cardState(0.06),
+      '--theme-color-button-secondary': card,
+      '--theme-color-button-transparent-hover': cardState(0.08),
+      '--theme-color-button-transparent-pressed': cardState(0.14),
+      '--theme-color-button-minimal': cardState(0.06),
+      '--theme-color-button-minimal-hover': cardState(0.12),
+      '--theme-color-button-minimal-pressed': cardState(0.18),
+      '--theme-color-button-subtle': card,
+      '--theme-color-button-subtle-hover': cardState(0.08),
+      '--theme-color-button-subtle-pressed': cardState(0.14),
+      '--theme-color-field-background': cardState(0.06),
+      '--theme-color-field-background-hover': cardState(0.09),
+      '--theme-color-floating-glass': card,
+      '--theme-color-floating-glass-border': mixHex(card, text, 0.18),
+      '--appearance-page-text': pageText,
+      '--appearance-page-hover': pageState(0.08),
+      '--appearance-page-pressed': pageState(0.14),
+      '--appearance-page-focus': readableColor(accent, page, 3),
+      '--appearance-header-hover': headerState(0.08),
+      '--appearance-header-pressed': headerState(0.14),
+      '--appearance-header-focus': readableColor(accent, header, 3),
+      '--appearance-page-text-secondary': secondary(pageText, page),
+      '--appearance-control-border': controlBorder,
+      '--appearance-accent-outline': readableColor(accent, card, 3),
+      '--appearance-selected-text': selectedText,
+      '--appearance-selected-hover': interactiveSurface(selectedSurface, selectedText, 0.06),
+      '--appearance-selected-pressed': interactiveSurface(selectedSurface, selectedText, 0.12),
+    };
+  }
+
+  function themeTokens(themeId, mode) {
+    const custom = themeId === 'custom';
+    const { grays, modes } = themes.get(custom ? 'classic' : themeId);
     const tokens = {
       '--theme-color-header-icon': 'var(--theme-color-text-primary)',
       ...grays,
-      ...modes[mode],
+      ...modes[custom ? 'light' : mode],
     };
+    if (custom) {
+      const { pattern, ...colors } = customPalette;
+      tokens[patternColorToken] = '#000000';
+      Object.assign(tokens, colors);
+      Object.assign(tokens, customContrast(tokens));
+      const accentMix = (percent, base) =>
+        `color-mix(in srgb, var(--theme-color-accent) ${percent}%, ${base})`;
+      const surface = 'var(--theme-color-background-content)';
+      Object.assign(tokens, {
+        '--theme-color-accent-subtle': accentMix(30, surface),
+        '--theme-color-accent-subtlest': accentMix(12, surface),
+        '--theme-color-accent-tint': accentMix(12, 'transparent'),
+        '--theme-color-background-selected': 'var(--theme-color-accent-subtlest)',
+        '--theme-color-background-selected-hover': accentMix(20, surface),
+        '--theme-color-background-highlight': accentMix(6, surface),
+        '--theme-color-filter-field-background-selected': 'var(--theme-color-background-highlight)',
+      });
+      const patternTokens = themes.get(pattern)?.modes.light;
+      for (const property of ['opacity', 'size']) {
+        const token = `--theme-${property}-backdrop-pattern`;
+        if (patternTokens) tokens[token] = patternTokens[token];
+      }
+    }
+    return tokens;
+  }
+
+  function declarations(tokens) {
     return Object.entries(tokens)
       .map(([token, value]) => `${token}: ${value};`).join('\n');
+  }
+
+  function applyCustomEditor() {
+    const context = document.createElement('canvas').getContext('2d');
+    const style = getComputedStyle(document.documentElement);
+    for (const input of colorInputs) {
+      context.fillStyle = style.getPropertyValue(input.dataset.themeColor).trim();
+      input.value = context.fillStyle;
+      if (input.dataset.themeColor === patternColorToken) {
+        input.disabled = !customPalette.pattern;
+        input.closest('label').hidden = input.disabled;
+      }
+    }
+    patternSelect.value = customPalette.pattern ?? '';
   }
 
   function apply() {
     const mode = colorMode();
     const root = document.documentElement;
-    root.dataset.colorMode = mode;
-    const pattern = Object.hasOwn(patternedThemes, selectedTheme) ? patternedThemes[selectedTheme] : null;
+    const custom = selectedTheme === 'custom';
+    const palette = themeTokens(selectedTheme, mode);
+    const surface = resolveHex(palette, '--theme-color-background-content');
+    const nativeScheme = custom ? (luminance(surface) < 0.179 ? 'dark' : 'light') : mode;
+    root.dataset.colorMode = custom ? 'light' : mode;
+    root.toggleAttribute('data-custom-palette', custom);
+    const pattern = patternFor(selectedTheme);
     root.toggleAttribute('data-appearance-pattern', Boolean(pattern));
     if (pattern) root.style.setProperty('--appearance-pattern-image', `url('./${pattern}')`);
     else root.style.removeProperty('--appearance-pattern-image');
     root.dataset.theme = selectedTheme === 'contrast' ? 'contrast' : 'classic';
-    themeStyle.textContent = `:root[data-appearance][data-color-mode] { color-scheme: ${mode};\n${declarations(selectedTheme, mode)}\n}`;
+    themeStyle.textContent = `:root[data-appearance][data-color-mode] { color-scheme: ${nativeScheme};\n${declarations(palette)}\n}`;
 
+    customPanel.hidden = !custom;
+    if (custom) applyCustomEditor();
     grid.toggleAttribute('data-compact', compactView);
     for (const tab of viewTabs) {
       tab.setAttribute('aria-pressed', String((tab.dataset.appearanceView === 'compact') === compactView));
@@ -120,7 +316,8 @@
       const selected = id === selectedTheme;
       card.classList.toggle('zvEjzVpg', selected);
       card.setAttribute('aria-pressed', String(selected));
-      const palette = declarations(id, mode);
+      if (id === 'custom') continue;
+      const palette = declarations(themeTokens(id, mode));
       svg.style.cssText = palette;
       swatch.style.cssText = palette;
     }
@@ -134,7 +331,7 @@
   function save() {
     apply();
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, compactView }));
+      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, compactView, customPalette }));
     } catch {
       // Selection still works when browser storage is unavailable.
     }
@@ -152,9 +349,20 @@
       save();
     });
   }
+  for (const input of colorInputs) {
+    input.addEventListener('input', () => {
+      customPalette[input.dataset.themeColor] = input.value;
+      save();
+    });
+  }
+  patternSelect.addEventListener('change', () => {
+    customPalette.pattern = patternSelect.value;
+    save();
+  });
   viewSwitcher.hidden = false;
   systemMode.addEventListener('change', () => {
     if (selectedMode === 'auto') apply();
   });
-  apply();
+  if (!preferences?.customPalette && preferences?.customModes) save();
+  else apply();
 })().catch(error => console.error(error));

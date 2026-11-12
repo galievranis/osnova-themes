@@ -167,3 +167,222 @@
   line-height: 1.25;
   overflow-wrap: anywhere;
 }
+
+#appearance-custom:not([hidden]) {
+  display: grid;
+  margin-top: 24px;
+  gap: 16px;
+}
+
+#appearance-custom-title {
+  margin: 0;
+}
+
+.appearance-custom-colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 8px;
+}
+
+.appearance-custom-colors label,
+.appearance-custom-pattern label:not([hidden]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 1px solid var(--theme-color-border);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.appearance-custom-colors input,
+.appearance-custom-pattern input {
+  flex: none;
+  width: 36px;
+  height: 28px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.appearance-custom-pattern {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.appearance-pattern-select {
+  position: relative;
+  color: var(--theme-color-text-primary);
+}
+
+.appearance-pattern-select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 14px;
+  width: 7px;
+  height: 7px;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.appearance-custom-pattern select {
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 6px 32px 6px 10px;
+  border: 1px solid var(--theme-color-border);
+  border-radius: 8px;
+  color: var(--theme-color-text-primary);
+  background: var(--theme-color-background-content);
+}
+
+
+[data-custom-palette] .aside--left {
+  --theme-color-text-primary: var(--appearance-page-text);
+  --theme-color-text-secondary: var(--appearance-page-text-secondary);
+  --theme-color-text-tertiary: var(--appearance-page-text-secondary);
+  color: var(--appearance-page-text);
+}
+
+[data-custom-palette] :is(.appearance-custom-colors label,
+  .appearance-custom-pattern label, .appearance-custom-pattern select) {
+  border-color: var(--appearance-control-border);
+}
+
+[data-custom-palette] #appearance-view-switcher button[aria-pressed="true"] {
+  background-color: var(--theme-color-accent-subtlest);
+  border-color: var(--appearance-accent-outline);
+  color: var(--appearance-selected-text);
+}
+
+[data-custom-palette] :is(#appearance-custom input,
+  #appearance-custom select):focus-visible {
+  outline: 2px solid var(--appearance-accent-outline);
+  outline-offset: 2px;
+}
+
+[data-custom-palette] .radio--checked .radio__control {
+  border-color: var(--appearance-accent-outline);
+}
+
+
+[data-compact] [data-appearance-theme="custom"] .appearance-swatch {
+  background: linear-gradient(105deg, #72a8fa, #8855fa 57%, #c64df4);
+}
+
+.appearance-custom-artwork path[data-token="--theme-color-background"]:not([data-paint]) {
+  fill: url(#appearance-custom-gradient);
+}
+
+.appearance-custom-artwork path[data-token="--theme-color-brand-header"],
+.appearance-custom-artwork [data-paint="stroke"] {
+  visibility: hidden;
+}
+
+.appearance-custom-artwork path[data-token="--theme-color-background-content"] {
+  fill: #ffffff;
+  fill-opacity: .72;
+}
+
+.appearance-custom-artwork [data-token="--theme-color-text-primary"] {
+  fill: #ffffff;
+  opacity: 1;
+}
+
+.appearance-custom-artwork [data-token="--theme-color-accent"] {
+  fill: #b347f6;
+}
+
+[data-custom-palette] [data-appearance-header] .header__back-button {
+  --theme-color-button-transparent-hover: var(--appearance-header-hover);
+  --theme-color-button-transparent-pressed: var(--appearance-header-pressed);
+}
+
+[data-custom-palette] :is(.quick-search-button, .bell__button, .tabbar__item) {
+  border-radius: 999px;
+}
+
+@media (hover: hover) {
+  [data-custom-palette] :is(.quick-search-button, .bell__button):hover {
+    background-color: var(--appearance-header-hover);
+  }
+
+  [data-custom-palette] .aside--left .z4vyLIzO:not(.RCt5iwch):hover {
+    background-color: var(--appearance-page-hover);
+  }
+
+  [data-custom-palette] .aside--left .z4vyLIzO:not(.RCt5iwch):is(:hover, :active) .Ye95fS5- {
+    color: var(--appearance-page-text);
+  }
+
+  [data-custom-palette] :is(#appearance-view-switcher button,
+    .appearance-custom-colors label, .appearance-custom-pattern label,
+    .appearance-custom-pattern select, .tabbar__item):hover {
+    background-color: var(--theme-color-button-subtle-hover);
+    color: var(--theme-color-text-primary);
+  }
+
+  [data-custom-palette] #appearance-view-switcher button[aria-pressed="true"]:hover {
+    background-color: var(--appearance-selected-hover);
+    color: var(--appearance-selected-text);
+  }
+}
+
+[data-custom-palette] :is(.quick-search-button, .bell__button):active {
+  background-color: var(--appearance-header-pressed);
+}
+
+[data-custom-palette] .aside--left .z4vyLIzO:not(.RCt5iwch):active {
+  background-color: var(--appearance-page-pressed);
+}
+
+[data-custom-palette] :is(#appearance-view-switcher button,
+  .appearance-custom-colors label, .appearance-custom-pattern label,
+  .appearance-custom-pattern select, .tabbar__item):active {
+  background-color: var(--theme-color-button-subtle-pressed);
+  color: var(--theme-color-text-primary);
+}
+
+[data-custom-palette] #appearance-view-switcher button[aria-pressed="true"]:active {
+  background-color: var(--appearance-selected-pressed);
+  color: var(--appearance-selected-text);
+}
+
+[data-custom-palette] :is(.widget-trends__item, #appearance-view-switcher button,
+  .tabbar__item, [data-appearance-theme]):focus-visible,
+[data-custom-palette] .radio__input:focus-visible ~ .radio__control {
+  outline: 2px solid var(--appearance-accent-outline);
+  outline-offset: -2px;
+}
+
+[data-custom-palette] [data-appearance-header] :is(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--appearance-header-focus);
+  outline-offset: 2px;
+}
+
+[data-custom-palette] .aside--left a:focus-visible {
+  outline: 2px solid var(--appearance-page-focus);
+  outline-offset: -2px;
+}
+
+@media (forced-colors: active) {
+  .appearance-custom-pattern select {
+    appearance: auto;
+    padding-inline-end: 10px;
+  }
+
+  .appearance-pattern-select::after {
+    display: none;
+  }
+}
+
+[data-appearance] .aside--left .z4vyLIzO.RCt5iwch {
+  background-color: #ffffff;
+  color: #171717;
+}

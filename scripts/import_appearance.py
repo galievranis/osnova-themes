@@ -17,6 +17,7 @@ THEMES = (
     ('filippovost', 'Филипповость'),
     ('gaming', 'Игровой'),
     ('cats', 'Коты'),
+    ('custom', 'Своя тема'),
 )
 
 
@@ -41,9 +42,9 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=13')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=27')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=16'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=29'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
@@ -52,6 +53,9 @@ def main():
     mobile_header = deepcopy(mobile.select_one('.bar--top > .header'))
     mobile_header['data-appearance-header'] = 'mobile'
     desktop_header.insert_after(mobile_header)
+
+    first_item = page.select_one('.aside--left .z4vyLIzO')
+    first_item['class'].append('RCt5iwch')
 
     for link in page.select('a[href]'):
         if link.get_text(strip=True) == 'Оформление':
@@ -65,6 +69,38 @@ def main():
 
     grid = page.select_one('.settings-wrapper .-wCE9pcP')
     grid['id'] = 'appearance-theme-grid'
+    custom = page.new_tag('section', id='appearance-custom', hidden='',
+                          attrs={'aria-labelledby': 'appearance-custom-title'})
+    heading = page.new_tag('h2', id='appearance-custom-title', attrs={'class': 'form-section__label'})
+    heading.string = 'Настройки своей темы'
+    custom.append(heading)
+    colors = page.new_tag('div', attrs={'class': 'appearance-custom-colors'})
+    for token, label in (
+        ('background', 'Фон страницы'), ('background-content', 'Фон карточек'),
+        ('brand-header', 'Шапка'), ('header-icon', 'Логотип и иконки шапки'),
+        ('accent', 'Акцент'), ('text-primary', 'Основной текст'),
+    ):
+        field = page.new_tag('label')
+        field.append(label)
+        field.append(page.new_tag('input', type='color', attrs={'data-theme-color': '--theme-color-' + token}))
+        colors.append(field)
+    custom.append(colors)
+    pattern_controls = page.new_tag('div', attrs={'class': 'appearance-custom-pattern'})
+    pattern_color = page.new_tag('label', hidden='')
+    pattern_color.append('Цвет узора')
+    pattern_color.append(page.new_tag('input', type='color', value='#000000', disabled='',
+                                     attrs={'data-theme-color': '--theme-color-backdrop-pattern'}))
+    patterns = page.new_tag('select', id='appearance-custom-pattern', attrs={'aria-label': 'Узор фона'})
+    for value, label in (('', 'Без узора'), ('gaming', 'Игровой'), ('cats', 'Коты'), ('filippovost', 'Клоуны')):
+        option = page.new_tag('option', value=value)
+        option.string = label
+        patterns.append(option)
+    pattern_select = page.new_tag('div', attrs={'class': 'appearance-pattern-select'})
+    pattern_select.append(patterns)
+    pattern_controls.extend([pattern_select, pattern_color])
+    custom.append(pattern_controls)
+    grid.insert_after(custom)
+
     view_switcher = page.new_tag('div', id='appearance-view-switcher', role='group', hidden='',
                                  attrs={'aria-label': 'Вид списка тем'})
     for view, label in (('preview', 'Превью'), ('compact', 'Компактно')):
@@ -89,6 +125,9 @@ def main():
         preview = card.select_one('.mADoi96g')
         preview.attrs.pop('data-theme-preview', None)
         preview['aria-hidden'] = 'true'
+        if theme == 'custom':
+            card['aria-controls'] = custom['id']
+            preview.clear()
         card.select_one('.K0bZe5rs').string = label
         grid.append(card)
 
