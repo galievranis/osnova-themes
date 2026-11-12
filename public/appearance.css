@@ -76,100 +76,10 @@
   opacity: var(--theme-opacity-backdrop-pattern);
 }
 
-[data-appearance] .view {
-  padding-bottom: calc(var(--layout-view-offset-y) + 68px);
-}
-
-#appearance-view-switcher:not([hidden]) {
-  position: fixed;
-  left: 50%;
-  bottom: calc(16px + env(safe-area-inset-bottom));
-  z-index: var(--layout-z-index-navbar);
-  transform: translateX(-50%);
-  display: flex;
-  gap: 4px;
-  padding: 4px;
-  border: 1px solid var(--theme-color-border);
-  border-radius: 999px;
-  background: var(--theme-color-background-content);
-  box-shadow: var(--theme-shadow-floating);
-}
-
-@media (max-width: 924px) {
-  #appearance-view-switcher:not([hidden]) {
-    bottom: calc(var(--layout-tabbar-height) + 24px + env(safe-area-inset-bottom));
-  }
-}
-
-#appearance-view-switcher button {
-  min-height: 36px;
-  padding: 4px 14px;
-  border-radius: 999px;
-  color: var(--theme-color-text-secondary);
-  font-size: 14px;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-#appearance-view-switcher button[aria-pressed="true"] {
-  color: var(--theme-color-text-primary);
-  background: color-mix(in srgb, var(--theme-color-accent) 15%, var(--theme-color-background-content));
-}
-
-#appearance-view-switcher button:focus-visible {
-  outline: 2px solid var(--theme-color-accent);
-  outline-offset: 1px;
-}
-
-.appearance-swatch {
-  display: none;
-}
-
-#appearance-theme-grid[data-compact] {
-  row-gap: 8px;
-}
-
-[data-compact] .b3kUJqmM {
-  grid-template-columns: 36px minmax(0, 1fr);
-  align-items: center;
-  min-height: 58px;
-  padding: 8px;
-  border: 1px solid var(--theme-color-border-over-background);
-  border-radius: 8px;
-}
-
-[data-compact] .b3kUJqmM:hover {
-  background-color: var(--theme-color-background-secondary);
-}
-
-[data-compact] .b3kUJqmM[aria-pressed="true"] {
-  border-color: var(--theme-color-accent);
-  box-shadow: inset 0 0 0 1px var(--theme-color-accent);
-}
-
-[data-compact] .mADoi96g {
-  display: none;
-}
-
-[data-compact] .appearance-swatch {
-  display: block;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--theme-color-border);
-  border-radius: 50%;
-  background-color: var(--theme-color-accent);
-}
-
 #appearance-theme-grid .K0bZe5rs {
   color: var(--theme-color-text-primary);
   font-size: 15px;
   text-align: left;
-}
-
-[data-compact] .K0bZe5rs {
-  font-weight: 500;
-  line-height: 1.25;
-  overflow-wrap: anywhere;
 }
 
 #appearance-custom:not([hidden]) {
@@ -259,12 +169,6 @@
   border-color: var(--appearance-control-border);
 }
 
-[data-custom-palette] #appearance-view-switcher button[aria-pressed="true"] {
-  background-color: var(--theme-color-accent-subtlest);
-  border-color: var(--appearance-accent-outline);
-  color: var(--appearance-selected-text);
-}
-
 [data-custom-palette] :is(#appearance-custom input,
   #appearance-custom select):focus-visible {
   outline: 2px solid var(--appearance-accent-outline);
@@ -275,10 +179,6 @@
   border-color: var(--appearance-accent-outline);
 }
 
-
-[data-compact] [data-appearance-theme="custom"] .appearance-swatch {
-  background: linear-gradient(105deg, #72a8fa, #8855fa 57%, #c64df4);
-}
 
 .appearance-custom-artwork path[data-token="--theme-color-background"]:not([data-paint]) {
   fill: url(#appearance-custom-gradient);
@@ -325,16 +225,10 @@
     color: var(--appearance-page-text);
   }
 
-  [data-custom-palette] :is(#appearance-view-switcher button,
-    .appearance-custom-colors label, .appearance-custom-pattern label,
+  [data-custom-palette] :is(.appearance-custom-colors label, .appearance-custom-pattern label,
     .appearance-custom-pattern select, .tabbar__item):hover {
     background-color: var(--theme-color-button-subtle-hover);
     color: var(--theme-color-text-primary);
-  }
-
-  [data-custom-palette] #appearance-view-switcher button[aria-pressed="true"]:hover {
-    background-color: var(--appearance-selected-hover);
-    color: var(--appearance-selected-text);
   }
 }
 
@@ -346,19 +240,13 @@
   background-color: var(--appearance-page-pressed);
 }
 
-[data-custom-palette] :is(#appearance-view-switcher button,
-  .appearance-custom-colors label, .appearance-custom-pattern label,
+[data-custom-palette] :is(.appearance-custom-colors label, .appearance-custom-pattern label,
   .appearance-custom-pattern select, .tabbar__item):active {
   background-color: var(--theme-color-button-subtle-pressed);
   color: var(--theme-color-text-primary);
 }
 
-[data-custom-palette] #appearance-view-switcher button[aria-pressed="true"]:active {
-  background-color: var(--appearance-selected-pressed);
-  color: var(--appearance-selected-text);
-}
-
-[data-custom-palette] :is(.widget-trends__item, #appearance-view-switcher button,
+[data-custom-palette] :is(.widget-trends__item,
   .tabbar__item, [data-appearance-theme]):focus-visible,
 [data-custom-palette] .radio__input:focus-visible ~ .radio__control {
   outline: 2px solid var(--appearance-accent-outline);

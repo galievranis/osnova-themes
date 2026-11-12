@@ -6,9 +6,6 @@
   }
 
   const cards = [...document.querySelectorAll('[data-appearance-theme]')];
-  const grid = document.getElementById('appearance-theme-grid');
-  const viewSwitcher = document.getElementById('appearance-view-switcher');
-  const viewTabs = [...viewSwitcher.querySelectorAll('button')];
   const customPanel = document.getElementById('appearance-custom');
   const colorInputs = [...customPanel.querySelectorAll('[data-theme-color]')];
   const patternSelect = document.getElementById('appearance-custom-pattern');
@@ -47,8 +44,6 @@
     ? preferences.theme : 'classic';
   let selectedMode = radios.some(radio => radio.value === preferences?.mode)
     ? preferences.mode : 'light';
-
-  let compactView = preferences?.compactView === true;
 
   let backgroundMode = preferences?.backgroundMode === 'image' ? 'image' : 'pattern';
   let backgroundImage = null;
@@ -168,15 +163,11 @@
     const id = card.dataset.appearanceTheme;
     const svg = makeArtwork(id);
     card.querySelector('.mADoi96g').replaceChildren(svg);
-    const swatch = document.createElement('span');
-    swatch.className = 'appearance-swatch';
-    swatch.setAttribute('aria-hidden', 'true');
-    card.prepend(swatch);
     card.addEventListener('click', () => {
       selectedTheme = id;
       save();
     });
-    return { id, card, svg, swatch };
+    return { id, card, svg };
   });
 
   function resolveHex(tokens, token) {
@@ -312,8 +303,6 @@
       '--appearance-outline-pressed-text': outlinePressed.text,
       '--appearance-accent-outline': readableColor(accent, card, 3),
       '--appearance-selected-text': selectedText,
-      '--appearance-selected-hover': interactiveSurface(selectedSurface, selectedText, 0.06),
-      '--appearance-selected-pressed': interactiveSurface(selectedSurface, selectedText, 0.12),
     };
   }
 
@@ -414,19 +403,13 @@
 
     customPanel.hidden = !custom;
     if (custom) applyCustomEditor();
-    grid.toggleAttribute('data-compact', compactView);
-    for (const tab of viewTabs) {
-      tab.setAttribute('aria-pressed', String((tab.dataset.appearanceView === 'compact') === compactView));
-    }
-
-    for (const { id, card, svg, swatch } of previews) {
+    for (const { id, card, svg } of previews) {
       const selected = id === selectedTheme;
       card.classList.toggle('zvEjzVpg', selected);
       card.setAttribute('aria-pressed', String(selected));
       if (id === 'custom') continue;
       const palette = declarations(themeTokens(id, mode));
       svg.style.cssText = palette;
-      swatch.style.cssText = palette;
     }
 
     for (const radio of radios) {
@@ -438,7 +421,7 @@
   function save() {
     apply();
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, compactView, customPalette, patternSettings, backgroundMode }));
+      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, customPalette, patternSettings, backgroundMode }));
     } catch {
       // Selection still works when browser storage is unavailable.
     }
@@ -447,12 +430,6 @@
   for (const radio of radios) {
     radio.addEventListener('change', () => {
       selectedMode = radio.value;
-      save();
-    });
-  }
-  for (const tab of viewTabs) {
-    tab.addEventListener('click', () => {
-      compactView = tab.dataset.appearanceView === 'compact';
       save();
     });
   }
@@ -523,7 +500,6 @@
     apply();
   }).catch(() => {});
 
-  viewSwitcher.hidden = false;
   systemMode.addEventListener('change', () => {
     if (selectedMode === 'auto') apply();
   });
