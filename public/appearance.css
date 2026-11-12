@@ -160,9 +160,12 @@
   background-color: var(--theme-color-accent);
 }
 
-[data-compact] .K0bZe5rs {
+#appearance-theme-grid .K0bZe5rs {
   color: var(--theme-color-text-primary);
-  font-size: 14px;
+  font-size: 15px;
+}
+
+[data-compact] .K0bZe5rs {
   font-weight: 500;
   line-height: 1.25;
   overflow-wrap: anywhere;
