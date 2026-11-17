@@ -14,6 +14,7 @@
   const patternInputs = [...patternSliders.querySelectorAll('input')];
   const patternToggle = document.getElementById('appearance-pattern-enabled');
   const patternSize = document.getElementById('appearance-theme-pattern-size');
+  const patternOpacity = document.getElementById('appearance-theme-pattern-opacity');
   const patternSettings = {};
   const backgroundButtons = [...document.querySelectorAll('[data-background-mode]')];
   const patternControls = document.getElementById('appearance-pattern-controls');
@@ -49,6 +50,7 @@
   let backgroundMode = preferences?.backgroundMode === 'image' ? 'image' : 'pattern';
   let patternEnabled = preferences?.patternEnabled !== false;
   const patternSizes = { ...preferences?.patternSizes };
+  const patternOpacities = { ...preferences?.patternOpacities };
   let backgroundImage = null;
   let imageRevision = 0;
   let imageDatabase;
@@ -366,6 +368,10 @@
     if (Number.isInteger(size) && size >= Number(patternSize.min) && size <= Number(patternSize.max)) {
       tokens['--theme-size-backdrop-pattern'] = `${size}px`;
     }
+    const opacity = patternOpacities[themeId]?.[mode];
+    if (!custom && Number.isInteger(opacity) && opacity >= 0 && opacity <= 100) {
+      tokens['--theme-opacity-backdrop-pattern'] = `${opacity}%`;
+    }
     return tokens;
   }
 
@@ -439,8 +445,12 @@
     patternToggle.checked = patternEnabled;
     patternToggle.closest('.checkbox').classList.toggle('checkbox--checked', patternEnabled);
     patternSize.parentElement.hidden = !showPattern;
+    patternOpacity.parentElement.hidden = !showPattern || custom;
     if (showPattern) {
       updatePatternSlider(patternSize, Number.parseFloat(palette['--theme-size-backdrop-pattern']), ' px');
+      if (!custom) {
+        updatePatternSlider(patternOpacity, Number.parseFloat(palette['--theme-opacity-backdrop-pattern']));
+      }
     }
     for (const { id, card, svg } of previews) {
       const selected = id === selectedTheme;
@@ -462,7 +472,7 @@
     try {
       localStorage.setItem(storageKey, JSON.stringify({
         theme: selectedTheme, mode: selectedMode, customPalette, patternSettings, backgroundMode,
-        patternEnabled, patternSizes,
+        patternEnabled, patternSizes, patternOpacities,
       }));
     } catch {
       // Selection still works when browser storage is unavailable.
@@ -497,6 +507,13 @@
   });
   patternSize.addEventListener('input', () => {
     patternSizes[selectedTheme] = patternSize.valueAsNumber;
+    save();
+  });
+  patternOpacity.addEventListener('input', () => {
+    patternOpacities[selectedTheme] = {
+      ...patternOpacities[selectedTheme],
+      [colorMode()]: patternOpacity.valueAsNumber,
+    };
     save();
   });
   for (const button of backgroundButtons) {
