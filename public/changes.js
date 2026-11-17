@@ -14,7 +14,7 @@
   else if(CSS.supports('color',resolved)){
    label.textContent='Цвет · на светлом и тёмном фоне';el.classList.add('color-sample');
    for(const dark of [false,true]){const half=document.createElement('div');half.className='color-half'+(dark?' dark':'');const fill=document.createElement('div');fill.className='color-fill';fill.style.background=resolved;const text=document.createElement('span');text.textContent='Aa';text.style.color=resolved;half.append(fill,text);layer.append(half)}
-  }else if(key.includes('-gradient-')&&CSS.supports('background-image',resolved)){layer.style.backgroundImage=resolved;label.textContent='Градиент'}
+  }else if((key.includes('-gradient-')||key==='--theme-color-brand-header')&&CSS.supports('background-image',resolved)){layer.style.backgroundImage=resolved;label.textContent='Градиент'}
   else if(key.includes('-shadow-')){el.classList.add('effect-sample');layer.className='effect-object';layer.textContent='Aa';layer.style.boxShadow=resolved;label.textContent=resolved==='none'?'Без тени':'Тень · в исходном масштабе'}
   else if(key.includes('-filter-')){layer.className='filter-scene';layer.innerHTML='<i></i><i></i><strong>Aa</strong>';layer.style.filter=resolved;label.textContent='Фильтр · '+resolved}
   else if(key.includes('-opacity-')){layer.className='opacity-object';layer.style.opacity=resolved;label.textContent='Непрозрачность · '+Math.round(Number(resolved)*100)+'%'}

@@ -25,7 +25,7 @@
     return updated;
   }
 
-  function createState(defaults, stored, legacy, contrast) {
+  function createState(defaults, stored, legacy, contrast, gta) {
     const modes = ['light', 'dark'];
     const validStored = stored?.version === 3 && modes.every(mode =>
       Array.isArray(stored.schemes?.[mode]) && stored.schemes[mode].length &&
@@ -35,6 +35,7 @@
       version: 3, mode: 'light', selected: {}, schemes: { light: [], dark: [] },
     };
     const bases = { classic: defaults, contrast: { light: contrast.light, dark: contrast.dark } };
+    if (gta) bases.gta = gta.modes;
     state.selected ??= {};
 
     for (const mode of modes) {
@@ -48,7 +49,7 @@
         state.selected[mode] = legacy?.id;
       } else {
         for (const scheme of state.schemes[mode]) {
-          const base = scheme.base === 'contrast' ? 'contrast' : 'classic';
+          const base = Object.hasOwn(bases, scheme.base) ? scheme.base : 'classic';
           const previous = state.paletteBases?.[base]?.[mode] ?? previousClassic[mode];
           scheme.tokens = rebase(scheme.tokens, previous, bases[base][mode]);
         }
@@ -58,6 +59,9 @@
       if (!state.paletteBases) {
         const id = schemes.some(scheme => scheme.id === 'contrast') ? crypto.randomUUID() : 'contrast';
         schemes.push({ id, name: 'Contrast', base: 'contrast', tokens: { ...contrast[mode] } });
+      }
+      if (gta && !state.paletteBases?.gta) {
+        schemes.push({ id: 'gta', name: gta.name, base: 'gta', tokens: { ...gta.modes[mode] } });
       }
       if (!schemes.some(scheme => scheme.id === state.selected[mode])) {
         state.selected[mode] = schemes[0].id;

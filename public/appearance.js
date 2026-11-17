@@ -12,10 +12,6 @@
   const patternColor = document.getElementById('appearance-pattern-color');
   const patternSliders = document.getElementById('appearance-pattern-sliders');
   const patternInputs = [...patternSliders.querySelectorAll('input')];
-  const patternToggle = document.getElementById('appearance-pattern-enabled');
-  const patternSize = document.getElementById('appearance-theme-pattern-size');
-  const patternOpacity = document.getElementById('appearance-theme-pattern-opacity');
-  const showPatternSliders = false;
   const patternSettings = {};
   const backgroundButtons = [...document.querySelectorAll('[data-background-mode]')];
   const patternControls = document.getElementById('appearance-pattern-controls');
@@ -49,9 +45,6 @@
     ? preferences.mode : 'light';
 
   let backgroundMode = preferences?.backgroundMode === 'image' ? 'image' : 'pattern';
-  let patternEnabled = preferences?.patternEnabled !== false;
-  const patternSizes = { ...preferences?.patternSizes };
-  const patternOpacities = { ...preferences?.patternOpacities };
   let backgroundImage = null;
   let imageRevision = 0;
   let imageDatabase;
@@ -365,14 +358,6 @@
           ? patternTokens[opacity] : `${patternSettings.opacity}%`;
       }
     }
-    const size = patternSizes[themeId];
-    if (showPatternSliders && Number.isInteger(size) && size >= Number(patternSize.min) && size <= Number(patternSize.max)) {
-      tokens['--theme-size-backdrop-pattern'] = `${size}px`;
-    }
-    const opacity = patternOpacities[themeId]?.[mode];
-    if (showPatternSliders && !custom && Number.isInteger(opacity) && opacity >= 0 && opacity <= 100) {
-      tokens['--theme-opacity-backdrop-pattern'] = `${opacity}%`;
-    }
     return tokens;
   }
 
@@ -381,12 +366,12 @@
       .map(([token, value]) => `${token}: ${value};`).join('\n');
   }
 
-  function updatePatternSlider(input, number, unit = '%') {
+  function updatePatternSlider(input, number) {
     input.value = number;
     const min = Number(input.min);
     const progress = (input.valueAsNumber - min) / (Number(input.max) - min) * 100;
     input.style.setProperty('--appearance-slider-progress', `${progress}%`);
-    const value = `${input.value}${unit}`;
+    const value = `${input.value}%`;
     input.parentElement.querySelector('output').value = value;
     input.setAttribute('aria-valuetext', value);
   }
@@ -433,27 +418,14 @@
       root.style.removeProperty('--appearance-custom-image');
     }
     root.toggleAttribute('data-appearance-image', Boolean(useImage && backgroundImage));
-    const showPattern = Boolean(pattern) && patternEnabled;
-    root.toggleAttribute('data-appearance-pattern', showPattern);
-    if (showPattern) root.style.setProperty('--appearance-pattern-image', `url('./${pattern}')`);
+    root.toggleAttribute('data-appearance-pattern', Boolean(pattern));
+    if (pattern) root.style.setProperty('--appearance-pattern-image', `url('./${pattern}')`);
     else root.style.removeProperty('--appearance-pattern-image');
     root.dataset.theme = selectedTheme === 'contrast' ? 'contrast' : 'classic';
     themeStyle.textContent = `:root[data-appearance][data-color-mode] { color-scheme: ${nativeScheme};\n${declarations(palette)}\n}`;
 
     customPanel.hidden = !custom;
     if (custom) applyCustomEditor();
-    patternToggle.closest('#appearance-pattern-toggles').hidden = !pattern;
-    patternToggle.checked = patternEnabled;
-    patternToggle.closest('.checkbox').classList.toggle('checkbox--checked', patternEnabled);
-    const showSliders = showPatternSliders && showPattern;
-    patternSize.parentElement.hidden = !showSliders;
-    patternOpacity.parentElement.hidden = !showSliders || custom;
-    if (showSliders) {
-      updatePatternSlider(patternSize, Number.parseFloat(palette['--theme-size-backdrop-pattern']), ' px');
-      if (!custom) {
-        updatePatternSlider(patternOpacity, Number.parseFloat(palette['--theme-opacity-backdrop-pattern']));
-      }
-    }
     for (const { id, card, svg } of previews) {
       const selected = id === selectedTheme;
       card.classList.toggle('zvEjzVpg', selected);
@@ -474,7 +446,6 @@
     try {
       localStorage.setItem(storageKey, JSON.stringify({
         theme: selectedTheme, mode: selectedMode, customPalette, patternSettings, backgroundMode,
-        patternEnabled, patternSizes, patternOpacities,
       }));
     } catch {
       // Selection still works when browser storage is unavailable.
@@ -503,21 +474,6 @@
       save();
     });
   }
-  patternToggle.addEventListener('change', () => {
-    patternEnabled = patternToggle.checked;
-    save();
-  });
-  patternSize.addEventListener('input', () => {
-    patternSizes[selectedTheme] = patternSize.valueAsNumber;
-    save();
-  });
-  patternOpacity.addEventListener('input', () => {
-    patternOpacities[selectedTheme] = {
-      ...patternOpacities[selectedTheme],
-      [colorMode()]: patternOpacity.valueAsNumber,
-    };
-    save();
-  });
   for (const button of backgroundButtons) {
     button.addEventListener('click', () => {
       backgroundMode = button.dataset.backgroundMode;

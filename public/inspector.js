@@ -9,6 +9,7 @@ function findTokens(target){const definitions=new Map(),found=new Set(),roots=ne
  }else if(r.cssRules)visit(r.cssRules)}}
  for(const sheet of doc.styleSheets)try{visit(sheet.cssRules)}catch{}
  chain.forEach((el,i)=>collect(el.style,i>0));
+ if(target.closest('.header'))roots.add('--theme-color-brand-header');
  const visited=new Set();function follow(k){if(visited.has(k))return;visited.add(k);if(k.startsWith('--theme-'))found.add(k);for(const ref of definitions.get(k)||[])follow(ref)}roots.forEach(follow);
  // Search in the editor must not limit what can be inspected.
  const cs=win.getComputedStyle(target),rootStyle=win.getComputedStyle(doc.documentElement);

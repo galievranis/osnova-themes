@@ -54,9 +54,9 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=50')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=52')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=50'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=51'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=2',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
@@ -133,32 +133,6 @@ def main():
     image_controls.extend([upload, remove, image_file, status])
     custom.append(image_controls)
     grid.insert_after(custom)
-    pattern_toggles = page.new_tag('div', id='appearance-pattern-toggles', hidden='',
-                                   attrs={'class': 'sV0BWu8Y'})
-    label = page.new_tag('label', attrs={'class': 'checkbox checkbox--checked'})
-    checkbox = page.new_tag('input', id='appearance-pattern-enabled', type='checkbox',
-                            attrs={'class': 'checkbox__input', 'checked': ''})
-    control = page.new_tag('div', attrs={'class': 'checkbox__control'})
-    icon = page.new_tag('svg', width='16', height='16', attrs={
-        'class': 'icon icon--tick checkbox__icon', 'aria-hidden': 'true',
-    })
-    icon.append(page.new_tag('use', attrs={
-        'xlink:href': '/original/5ab740755eaffd60a05a.svg#sprite-tick',
-    }))
-    control.append(icon)
-    caption = page.new_tag('div', attrs={'class': 'checkbox__caption'})
-    caption.string = 'Узор на фоне'
-    label.extend([checkbox, control, caption])
-    pattern_toggles.append(label)
-    for key, text, minimum, maximum in (
-        ('size', 'Размер узора', '32', '720'),
-        ('opacity', 'Интенсивность узора', '0', '100'),
-    ):
-        slider = pattern_slider(page, 'appearance-theme-pattern-' + key, text, minimum, maximum)
-        slider['hidden'] = ''
-        pattern_toggles.append(slider)
-    custom.insert_after(pattern_toggles)
-
     template = deepcopy(grid.select_one('.b3kUJqmM'))
     grid.clear()
     for theme, label in THEMES:

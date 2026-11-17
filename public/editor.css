@@ -38,3 +38,22 @@ body{overflow:hidden}main{display:block;height:100dvh}.workspace{height:100dvh}.
   min-width: 0;
   margin: 0;
 }
+#tokens .token:has(.header-token-value) {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+}
+
+#tokens .header-token-value {
+  width: 100%;
+  min-height: 70px;
+  padding: 6px 8px;
+  border: 1px solid #dedfe3;
+  border-radius: 6px;
+  resize: vertical;
+  font: 11px/1.4 ui-monospace, monospace;
+  color: #252629;
+}
+
+#tokens .header-token-value.invalid {
+  border-color: #d33;
+}

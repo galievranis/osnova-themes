@@ -1,7 +1,24 @@
 (async()=>{
 const $=s=>document.querySelector(s),frame=$('#preview');let name=$('#themes')?.selectedOptions[0]?.textContent||'theme';
 const source=await fetch('theme-preview.svg?v=2').then(r=>r.text());
-function artwork(){const svg=new DOMParser().parseFromString(source,'image/svg+xml').documentElement,root=frame.contentDocument?.documentElement;if(!root)return svg;const cs=frame.contentWindow.getComputedStyle(root);for(const el of svg.querySelectorAll('[data-token]')){el.setAttribute(el.dataset.paint||'fill',cs.getPropertyValue(el.dataset.token).trim()||'transparent');el.removeAttribute('data-token');el.removeAttribute('data-paint')}return svg}
+function artwork(){
+ const svg=new DOMParser().parseFromString(source,'image/svg+xml').documentElement;
+ const root=frame.contentDocument?.documentElement;
+ if(!root)return svg;
+ const cs=frame.contentWindow.getComputedStyle(root);
+ for(const el of svg.querySelectorAll('[data-token]')){
+  const token=el.dataset.token;
+  let value=cs.getPropertyValue(token).trim();
+  if(token==='--theme-color-brand-header' && !CSS.supports('color',value)){
+   const fallback=cs.getPropertyValue('--theme-color-brand-content-background').trim();
+   value=CSS.supports('color',fallback)?fallback:cs.getPropertyValue('--theme-color-background-content').trim();
+  }
+  el.setAttribute(el.dataset.paint||'fill',value||'transparent');
+  el.removeAttribute('data-token');
+  el.removeAttribute('data-paint');
+ }
+ return svg;
+}
 function render(){$('#theme-artwork-image').replaceChildren(document.importNode(artwork(),true))}
 addEventListener('theme-updated',e=>{name=e.detail.name;render()});frame.addEventListener('load',render);render();
 const ru={а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'yo',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'kh',ц:'ts',ч:'ch',ш:'sh',щ:'shch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya'};
