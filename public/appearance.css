@@ -348,6 +348,17 @@
 
 #appearance-pattern-toggles:not([hidden]) {
   margin-top: 24px;
+  justify-content: stretch;
+}
+
+#appearance-pattern-toggles > .checkbox {
+  justify-self: start;
+}
+
+#appearance-theme-pattern-size-control:not([hidden]) {
+  max-width: 400px;
+  --appearance-control-border: var(--theme-color-border-over-background);
+  --appearance-accent-outline: var(--theme-color-accent);
 }
 
 #appearance-pattern-toggles .checkbox__input {

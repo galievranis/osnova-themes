@@ -54,9 +54,9 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=48')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=49')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=47'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=48'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=2',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
@@ -150,6 +150,10 @@ def main():
     caption.string = 'Узор на фоне'
     label.extend([checkbox, control, caption])
     pattern_toggles.append(label)
+    size = pattern_slider(page, 'appearance-theme-pattern-size', 'Размер узора', '32', '720')
+    size['id'] = 'appearance-theme-pattern-size-control'
+    size['hidden'] = ''
+    pattern_toggles.append(size)
     custom.insert_after(pattern_toggles)
 
     template = deepcopy(grid.select_one('.b3kUJqmM'))
