@@ -31,7 +31,8 @@ def build_pages(themes, appearance_themes):
     page = page.replace('href="/appearance.html"', 'href="./"')
     (output / 'index.html').write_text(page, encoding='utf-8')
 
-    for name in ('appearance.css', 'appearance.js', 'theme-preview.svg', 'gaming.svg', 'cats.svg', 'premium.svg'):
+    for name in ('appearance.css', 'appearance.js', 'theme-preview.svg',
+                 'gaming.svg', 'cats.svg', 'premium.svg', 'gta-pattern.png'):
         shutil.copyfile(public / name, output / name)
     for name in ('original', 'placeholders'):
         shutil.copytree(public / name, output / name, ignore=shutil.ignore_patterns('*.html', '.DS_Store'))

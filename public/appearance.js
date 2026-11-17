@@ -5,15 +5,15 @@
     return response;
   }
 
-  const cards = [...document.querySelectorAll('[data-appearance-theme]')];
+  const cards = [...document.querySelectorAll('[data-appearance-theme]:not([hidden])')];
   const customPanel = document.getElementById('appearance-custom');
   const colorInputs = [...customPanel.querySelectorAll('[data-theme-color]')];
   const patternSelect = document.getElementById('appearance-custom-pattern');
   const patternColor = document.getElementById('appearance-pattern-color');
   const patternSliders = document.getElementById('appearance-pattern-sliders');
   const patternInputs = [...patternSliders.querySelectorAll('input')];
+  const patternToggle = document.getElementById('appearance-pattern-enabled');
   const patternSettings = {};
-  const patternUnits = { opacity: '%', size: 'px' };
   const backgroundButtons = [...document.querySelectorAll('[data-background-mode]')];
   const patternControls = document.getElementById('appearance-pattern-controls');
   const imageControls = document.getElementById('appearance-custom-image');
@@ -46,6 +46,7 @@
     ? preferences.mode : 'light';
 
   let backgroundMode = preferences?.backgroundMode === 'image' ? 'image' : 'pattern';
+  let patternEnabled = preferences?.patternEnabled !== false;
   let backgroundImage = null;
   let imageRevision = 0;
   let imageDatabase;
@@ -100,7 +101,7 @@
   const themeStyle = document.createElement('style');
   document.head.append(themeStyle);
 
-  const patternedThemes = { gaming: 'gaming.svg', cats: 'cats.svg', filippovost: 'premium.svg' };
+  const patternedThemes = { gaming: 'gaming.svg', cats: 'cats.svg', filippovost: 'premium.svg', gta: 'gta-pattern.png' };
 
   function patternFor(themeId) {
     const patternId = themeId === 'custom' ? customPalette.pattern : themeId;
@@ -116,18 +117,23 @@
     backdrop.after(pattern);
   }
 
-  function decorateCustomArtwork(svg) {
+  function addArtworkGradient(svg, id, stops, endY = '0') {
     const gradient = document.createElementNS(svg.namespaceURI, 'linearGradient');
-    gradient.id = 'appearance-custom-gradient';
+    gradient.id = id;
     gradient.setAttribute('x2', '1');
-    gradient.setAttribute('y2', '.25');
-    for (const [offset, color] of [['0%', '#72a8fa'], ['57%', '#8855fa'], ['100%', '#c64df4']]) {
+    gradient.setAttribute('y2', endY);
+    for (const [offset, color] of stops) {
       const stop = document.createElementNS(svg.namespaceURI, 'stop');
       stop.setAttribute('offset', offset);
       stop.setAttribute('stop-color', color);
       gradient.append(stop);
     }
     svg.querySelector('defs').append(gradient);
+  }
+
+  function decorateCustomArtwork(svg) {
+    addArtworkGradient(svg, 'appearance-custom-gradient',
+      [['0%', '#72a8fa'], ['57%', '#8855fa'], ['100%', '#c64df4']], '.25');
     svg.classList.add('appearance-custom-artwork');
   }
 
@@ -153,6 +159,20 @@
     if (themeId === 'custom') decorateCustomArtwork(svg);
     else if (Object.hasOwn(patternedThemes, themeId)) {
       addArtworkPattern(svg, patternFor(themeId));
+    }
+    if (themeId === 'gta') {
+      addArtworkGradient(svg, 'appearance-gta-header-gradient', [
+        ['0%', 'var(--theme-color-header-gradient-start)'],
+        ['50%', 'var(--theme-color-brand-header)'],
+        ['100%', 'var(--theme-color-header-gradient-end)'],
+      ]);
+      svg.querySelector('[data-token="--theme-color-brand-header"]')
+        .setAttribute('fill', 'url(#appearance-gta-header-gradient)');
+      addArtworkGradient(svg, 'appearance-gta-pattern-gradient', [
+        ['0%', 'var(--theme-color-pattern-glow)'],
+        ['50%', 'var(--theme-color-backdrop-pattern)'],
+        ['100%', 'var(--theme-color-pattern-gradient-end)'],
+      ]);
     }
     svg.classList.add('appearance-artwork');
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice');
@@ -333,11 +353,10 @@
       });
       const patternTokens = themes.get(pattern)?.modes.light;
       if (patternTokens) {
-        for (const [property, unit] of Object.entries(patternUnits)) {
-          const token = `--theme-${property}-backdrop-pattern`;
-          tokens[token] = patternSettings[property] === undefined
-            ? patternTokens[token] : `${patternSettings[property]}${unit}`;
-        }
+        tokens['--theme-size-backdrop-pattern'] = patternTokens['--theme-size-backdrop-pattern'];
+        const opacity = '--theme-opacity-backdrop-pattern';
+        tokens[opacity] = patternSettings.opacity === undefined
+          ? patternTokens[opacity] : `${patternSettings.opacity}%`;
       }
     }
     return tokens;
@@ -346,6 +365,16 @@
   function declarations(tokens) {
     return Object.entries(tokens)
       .map(([token, value]) => `${token}: ${value};`).join('\n');
+  }
+
+  function updatePatternSlider(input, number) {
+    input.value = number;
+    const min = Number(input.min);
+    const progress = (input.valueAsNumber - min) / (Number(input.max) - min) * 100;
+    input.style.setProperty('--appearance-slider-progress', `${progress}%`);
+    const value = `${input.value}%`;
+    input.parentElement.querySelector('output').value = value;
+    input.setAttribute('aria-valuetext', value);
   }
 
   function applyCustomEditor() {
@@ -368,13 +397,8 @@
     if (patternSliders.hidden) return;
     for (const input of patternInputs) {
       const property = input.dataset.patternProperty;
-      input.value = Number.parseFloat(style.getPropertyValue(`--theme-${property}-backdrop-pattern`));
-      const min = Number(input.min);
-      const progress = (input.valueAsNumber - min) / (Number(input.max) - min) * 100;
-      input.style.setProperty('--appearance-slider-progress', `${progress}%`);
-      const value = property === 'size' ? `${input.value} px` : `${input.value}%`;
-      input.parentElement.querySelector('output').value = value;
-      input.setAttribute('aria-valuetext', value);
+      const value = Number.parseFloat(style.getPropertyValue(`--theme-${property}-backdrop-pattern`));
+      updatePatternSlider(input, value);
     }
   }
 
@@ -395,14 +419,18 @@
       root.style.removeProperty('--appearance-custom-image');
     }
     root.toggleAttribute('data-appearance-image', Boolean(useImage && backgroundImage));
-    root.toggleAttribute('data-appearance-pattern', Boolean(pattern));
-    if (pattern) root.style.setProperty('--appearance-pattern-image', `url('./${pattern}')`);
+    const showPattern = Boolean(pattern) && patternEnabled;
+    root.toggleAttribute('data-appearance-pattern', showPattern);
+    if (showPattern) root.style.setProperty('--appearance-pattern-image', `url('./${pattern}')`);
     else root.style.removeProperty('--appearance-pattern-image');
     root.dataset.theme = selectedTheme === 'contrast' ? 'contrast' : 'classic';
     themeStyle.textContent = `:root[data-appearance][data-color-mode] { color-scheme: ${nativeScheme};\n${declarations(palette)}\n}`;
 
     customPanel.hidden = !custom;
     if (custom) applyCustomEditor();
+    patternToggle.closest('#appearance-pattern-toggles').hidden = !pattern;
+    patternToggle.checked = patternEnabled;
+    patternToggle.closest('.checkbox').classList.toggle('checkbox--checked', patternEnabled);
     for (const { id, card, svg } of previews) {
       const selected = id === selectedTheme;
       card.classList.toggle('zvEjzVpg', selected);
@@ -421,7 +449,10 @@
   function save() {
     apply();
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ theme: selectedTheme, mode: selectedMode, customPalette, patternSettings, backgroundMode }));
+      localStorage.setItem(storageKey, JSON.stringify({
+        theme: selectedTheme, mode: selectedMode, customPalette, patternSettings, backgroundMode,
+        patternEnabled,
+      }));
     } catch {
       // Selection still works when browser storage is unavailable.
     }
@@ -449,6 +480,10 @@
       save();
     });
   }
+  patternToggle.addEventListener('change', () => {
+    patternEnabled = patternToggle.checked;
+    save();
+  });
   for (const button of backgroundButtons) {
     button.addEventListener('click', () => {
       backgroundMode = button.dataset.backgroundMode;

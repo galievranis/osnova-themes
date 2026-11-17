@@ -7,16 +7,30 @@ from import_preview_screens import archive_resources, prepare_page, read_archive
 
 THEMES = (
     ('classic', 'Классика'),
-    ('contrast', 'Контрастная'),
+    ('contrast', 'Контраст'),
     ('lime', 'Транспорт'),
     ('sapphire', 'Легенды'),
     ('mint', 'Деньги'),
     ('filippovost', 'Филипповость'),
     ('gaming', 'Игровой'),
     ('cats', 'Коты'),
+    ('gta', 'GTA'),
     ('future', 'Будущее'),
     ('custom', 'Своя тема'),
 )
+VISIBLE_THEMES = {'classic', 'contrast', 'gta'}
+
+
+def pattern_slider(page, slider_id, label, minimum, maximum, prop=None):
+    control = page.new_tag('div', attrs={'class': 'appearance-pattern-slider'})
+    title = page.new_tag('label', attrs={'for': slider_id})
+    title.string = label
+    output = page.new_tag('output', attrs={'for': slider_id, 'aria-hidden': 'true'})
+    slider = page.new_tag('input', id=slider_id, type='range', min=minimum, max=maximum)
+    if prop is not None:
+        slider['data-pattern-property'] = prop
+    control.extend([title, output, slider])
+    return control
 
 
 def main():
@@ -40,9 +54,9 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=37')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=47')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=37'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=46'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=2',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
@@ -92,7 +106,8 @@ def main():
     pattern_controls = page.new_tag('div', id='appearance-pattern-controls',
                                     attrs={'class': 'appearance-custom-pattern'})
     patterns = page.new_tag('select', id='appearance-custom-pattern', attrs={'aria-label': 'Узор фона'})
-    for value, label in (('', 'Без узора'), ('gaming', 'Игровой'), ('cats', 'Коты'), ('filippovost', 'Клоуны')):
+    for value, label in (('', 'Без узора'), ('gaming', 'Игровой'), ('gta', 'GTA'),
+                         ('cats', 'Коты'), ('filippovost', 'Клоуны')):
         option = page.new_tag('option', value=value)
         option.string = label
         patterns.append(option)
@@ -106,18 +121,7 @@ def main():
     custom.append(pattern_controls)
 
     sliders = page.new_tag('div', id='appearance-pattern-sliders', hidden='')
-    for prop, label, minimum, maximum in (
-        ('opacity', 'Интенсивность цвета', '0', '100'), ('size', 'Размер узора', '32', '400'),
-    ):
-        control = page.new_tag('div', attrs={'class': 'appearance-pattern-slider'})
-        slider_id = 'appearance-pattern-' + prop
-        title = page.new_tag('label', attrs={'for': slider_id})
-        title.string = label
-        output = page.new_tag('output', attrs={'for': slider_id, 'aria-hidden': 'true'})
-        slider = page.new_tag('input', id=slider_id, type='range', min=minimum, max=maximum,
-                              attrs={'data-pattern-property': prop})
-        control.extend([title, output, slider])
-        sliders.append(control)
+    sliders.append(pattern_slider(page, 'appearance-pattern-opacity', 'Интенсивность цвета', '0', '100', 'opacity'))
     custom.append(sliders)
     image_controls = page.new_tag('div', id='appearance-custom-image', hidden='')
     upload = page.new_tag('button', id='appearance-image-upload', type='button')
@@ -129,6 +133,24 @@ def main():
     image_controls.extend([upload, remove, image_file, status])
     custom.append(image_controls)
     grid.insert_after(custom)
+    pattern_toggles = page.new_tag('div', id='appearance-pattern-toggles', hidden='',
+                                   attrs={'class': 'sV0BWu8Y'})
+    label = page.new_tag('label', attrs={'class': 'checkbox checkbox--checked'})
+    checkbox = page.new_tag('input', id='appearance-pattern-enabled', type='checkbox',
+                            attrs={'class': 'checkbox__input', 'checked': ''})
+    control = page.new_tag('div', attrs={'class': 'checkbox__control'})
+    icon = page.new_tag('svg', width='16', height='16', attrs={
+        'class': 'icon icon--tick checkbox__icon', 'aria-hidden': 'true',
+    })
+    icon.append(page.new_tag('use', attrs={
+        'xlink:href': '/original/5ab740755eaffd60a05a.svg#sprite-tick',
+    }))
+    control.append(icon)
+    caption = page.new_tag('div', attrs={'class': 'checkbox__caption'})
+    caption.string = 'Узор на фоне'
+    label.extend([checkbox, control, caption])
+    pattern_toggles.append(label)
+    custom.insert_after(pattern_toggles)
 
     template = deepcopy(grid.select_one('.b3kUJqmM'))
     grid.clear()
@@ -136,6 +158,8 @@ def main():
         card = deepcopy(template)
         card.attrs.pop('data-gtm-click', None)
         card['data-appearance-theme'] = theme
+        if theme not in VISIBLE_THEMES:
+            card['hidden'] = ''
         selected = theme == 'classic'
         if not selected:
             card['class'].remove('zvEjzVpg')

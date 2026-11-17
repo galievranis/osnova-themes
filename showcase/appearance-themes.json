@@ -121,7 +121,7 @@
       "--theme-color-accent-strong": "#5C2DB5",
       "--theme-color-accent-strongest": "#4D249C",
       "--theme-opacity-backdrop-pattern": "10%",
-      "--theme-size-backdrop-pattern": "175px"
+      "--theme-size-backdrop-pattern": "400px"
     },
     "dark": {
       "--theme-color-brand-header": "#FFFFFF",
@@ -132,7 +132,7 @@
       "--theme-color-accent-strongest": "#D5BFFF",
       "--theme-color-on-fill": "#24143D",
       "--theme-opacity-backdrop-pattern": "10%",
-      "--theme-size-backdrop-pattern": "175px"
+      "--theme-size-backdrop-pattern": "400px"
     }
   },
   {
@@ -163,7 +163,7 @@
       "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
       "--theme-color-backdrop-pattern": "rgb(70, 53, 110)",
       "--theme-opacity-backdrop-pattern": "20%",
-      "--theme-size-backdrop-pattern": "150px"
+      "--theme-size-backdrop-pattern": "400px"
     },
     "dark": {
       "--theme-color-background": "#241537",
@@ -192,7 +192,7 @@
       "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
       "--theme-color-backdrop-pattern": "rgb(193, 151, 255)",
       "--theme-opacity-backdrop-pattern": "20%",
-      "--theme-size-backdrop-pattern": "150px"
+      "--theme-size-backdrop-pattern": "400px"
     }
   },
   {
@@ -226,7 +226,7 @@
       "--theme-color-header-icon": "#382B32",
       "--theme-color-backdrop-pattern": "rgb(118, 76, 58)",
       "--theme-opacity-backdrop-pattern": "10%",
-      "--theme-size-backdrop-pattern": "160px"
+      "--theme-size-backdrop-pattern": "400px"
     },
     "dark": {
       "--theme-color-background": "#2B222A",
@@ -256,7 +256,7 @@
       "--theme-color-on-fill": "#30212A",
       "--theme-color-backdrop-pattern": "rgb(234, 193, 157)",
       "--theme-opacity-backdrop-pattern": "10%",
-      "--theme-size-backdrop-pattern": "160px"
+      "--theme-size-backdrop-pattern": "400px"
     }
   },
   {
@@ -313,6 +313,97 @@
       "--theme-color-popover-background": "var(--theme-color-background-content)",
       "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
       "--theme-color-on-fill": "#10233A"
+    }
+  },
+  {
+    "id": "gta",
+    "name": "GTA",
+    "source": "classic",
+    "light": {
+      "--theme-color-brand-primary": "var(--theme-color-accent)",
+      "--theme-color-brand-primary-bright": "var(--theme-color-accent)",
+      "--theme-color-brand-background": "var(--theme-color-background)",
+      "--theme-color-brand-content-background": "var(--theme-color-brand-header)",
+      "--theme-color-brand-distribution-background": "var(--theme-color-background-secondary)",
+      "--theme-color-brand-icon": "var(--theme-color-accent-subtle)",
+      "--theme-color-background-selected": "var(--theme-color-accent-subtlest)",
+      "--theme-color-background-selected-hover": "var(--theme-color-accent-subtle)",
+      "--theme-color-background-highlight": "var(--theme-color-background-secondary)",
+      "--theme-color-popover-background": "var(--theme-color-background-content)",
+      "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
+      "--theme-color-background": "#F8E6FF",
+      "--theme-color-background-content": "#FFF8FE",
+      "--theme-color-background-secondary": "#F9EDFF",
+      "--theme-color-brand-header": "#FF8ACB",
+      "--theme-color-header-gradient-start": "#FFAE97",
+      "--theme-color-header-gradient-end": "#C6A0FF",
+      "--theme-color-trend-hover": "#F3D2FA",
+      "--theme-color-trend-hover-border": "#CB85D8",
+      "--theme-color-trend-pressed": "#ECC5FF",
+      "--theme-color-header-icon": "#3C124B",
+      "--theme-color-accent": "#A20B79",
+      "--theme-color-accent-strong": "#880567",
+      "--theme-color-accent-strongest": "#780256",
+      "--theme-color-accent-subtle": "#ECC5FF",
+      "--theme-color-accent-subtlest": "#F8DEFC",
+      "--theme-color-border": "#ECD2F1",
+      "--theme-color-border-over-background": "#DDBAE7",
+      "--theme-color-backdrop-pattern": "#9E1DB4",
+      "--theme-color-pattern-glow": "#D64F20",
+      "--theme-color-pattern-gradient-end": "#6945D8",
+      "--theme-gradient-backdrop-pattern": "linear-gradient(90deg, var(--theme-color-pattern-glow), var(--theme-color-backdrop-pattern), var(--theme-color-pattern-gradient-end))",
+      "--theme-color-text-primary": "#30153C",
+      "--theme-color-on-fill": "#FFFFFF",
+      "--theme-opacity-backdrop-pattern": "37%",
+      "--theme-size-backdrop-pattern": "400px",
+      "--theme-color-button-primary": "var(--theme-color-accent)",
+      "--theme-color-button-primary-hover": "var(--theme-color-accent-strong)",
+      "--theme-color-button-primary-pressed": "var(--theme-color-accent-strongest)",
+      "--theme-color-button-on-primary": "var(--theme-color-on-fill)"
+    },
+    "dark": {
+      "--theme-color-brand-primary": "var(--theme-color-accent)",
+      "--theme-color-brand-primary-bright": "var(--theme-color-accent)",
+      "--theme-color-brand-background": "var(--theme-color-background)",
+      "--theme-color-brand-content-background": "var(--theme-color-brand-header)",
+      "--theme-color-brand-distribution-background": "var(--theme-color-background-secondary)",
+      "--theme-color-brand-icon": "var(--theme-color-accent-subtle)",
+      "--theme-color-background-selected": "var(--theme-color-accent-subtlest)",
+      "--theme-color-background-selected-hover": "var(--theme-color-accent-subtle)",
+      "--theme-color-background-highlight": "var(--theme-color-background-secondary)",
+      "--theme-color-popover-background": "var(--theme-color-background-content)",
+      "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
+      "--theme-color-background": "#180D2B",
+      "--theme-color-background-content": "#231535",
+      "--theme-color-background-secondary": "#302047",
+      "--theme-color-brand-header": "#3F1B60",
+      "--theme-color-header-gradient-start": "#651B51",
+      "--theme-color-header-gradient-end": "#123B59",
+      "--theme-color-trend-hover": "#29444F",
+      "--theme-color-trend-hover-border": "#559B9B",
+      "--theme-color-trend-pressed": "#365262",
+      "--theme-color-radio-outline": "#9272AC",
+      "--theme-color-radio-dot": "#1C142B",
+      "--theme-color-header-icon": "#FF97DC",
+      "--theme-color-accent": "#5CF4EA",
+      "--theme-color-accent-strong": "#88FFF5",
+      "--theme-color-accent-strongest": "#B4FFF9",
+      "--theme-color-accent-subtle": "#365262",
+      "--theme-color-accent-subtlest": "#263747",
+      "--theme-color-border": "#413056",
+      "--theme-color-border-over-background": "#523C6B",
+      "--theme-color-backdrop-pattern": "#FF65CB",
+      "--theme-color-pattern-glow": "#9976FF",
+      "--theme-color-pattern-gradient-end": "var(--theme-color-accent)",
+      "--theme-gradient-backdrop-pattern": "linear-gradient(90deg, var(--theme-color-pattern-glow), var(--theme-color-backdrop-pattern), var(--theme-color-pattern-gradient-end))",
+      "--theme-color-text-primary": "#FCEEFF",
+      "--theme-color-on-fill": "#1C142B",
+      "--theme-opacity-backdrop-pattern": "46%",
+      "--theme-size-backdrop-pattern": "400px",
+      "--theme-color-button-primary": "var(--theme-color-accent)",
+      "--theme-color-button-primary-hover": "var(--theme-color-accent-strong)",
+      "--theme-color-button-primary-pressed": "var(--theme-color-accent-strongest)",
+      "--theme-color-button-on-primary": "var(--theme-color-on-fill)"
     }
   }
 ]
