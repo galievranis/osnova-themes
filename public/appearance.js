@@ -15,6 +15,7 @@
   const patternToggle = document.getElementById('appearance-pattern-enabled');
   const patternSize = document.getElementById('appearance-theme-pattern-size');
   const patternOpacity = document.getElementById('appearance-theme-pattern-opacity');
+  const showPatternSliders = false;
   const patternSettings = {};
   const backgroundButtons = [...document.querySelectorAll('[data-background-mode]')];
   const patternControls = document.getElementById('appearance-pattern-controls');
@@ -365,11 +366,11 @@
       }
     }
     const size = patternSizes[themeId];
-    if (Number.isInteger(size) && size >= Number(patternSize.min) && size <= Number(patternSize.max)) {
+    if (showPatternSliders && Number.isInteger(size) && size >= Number(patternSize.min) && size <= Number(patternSize.max)) {
       tokens['--theme-size-backdrop-pattern'] = `${size}px`;
     }
     const opacity = patternOpacities[themeId]?.[mode];
-    if (!custom && Number.isInteger(opacity) && opacity >= 0 && opacity <= 100) {
+    if (showPatternSliders && !custom && Number.isInteger(opacity) && opacity >= 0 && opacity <= 100) {
       tokens['--theme-opacity-backdrop-pattern'] = `${opacity}%`;
     }
     return tokens;
@@ -444,9 +445,10 @@
     patternToggle.closest('#appearance-pattern-toggles').hidden = !pattern;
     patternToggle.checked = patternEnabled;
     patternToggle.closest('.checkbox').classList.toggle('checkbox--checked', patternEnabled);
-    patternSize.parentElement.hidden = !showPattern;
-    patternOpacity.parentElement.hidden = !showPattern || custom;
-    if (showPattern) {
+    const showSliders = showPatternSliders && showPattern;
+    patternSize.parentElement.hidden = !showSliders;
+    patternOpacity.parentElement.hidden = !showSliders || custom;
+    if (showSliders) {
       updatePatternSlider(patternSize, Number.parseFloat(palette['--theme-size-backdrop-pattern']), ' px');
       if (!custom) {
         updatePatternSlider(patternOpacity, Number.parseFloat(palette['--theme-opacity-backdrop-pattern']));
