@@ -161,13 +161,14 @@
       addArtworkPattern(svg, patternFor(themeId));
     }
     if (themeId === 'gta') {
-      addArtworkGradient(svg, 'appearance-gta-header-gradient', [
-        ['0%', 'var(--theme-color-header-gradient-start)'],
-        ['50%', 'var(--theme-color-brand-header)'],
-        ['100%', 'var(--theme-color-header-gradient-end)'],
-      ]);
-      svg.querySelector('[data-token="--theme-color-brand-header"]')
-        .setAttribute('fill', 'url(#appearance-gta-header-gradient)');
+      const header = svg.querySelector('[data-token="--theme-color-brand-header"]');
+      const mesh = document.createElementNS(svg.namespaceURI, 'foreignObject');
+      mesh.setAttribute('width', '100%');
+      mesh.setAttribute('height', '36');
+      const fill = document.createElement('div');
+      fill.className = 'appearance-header-mesh';
+      mesh.append(fill);
+      header.after(mesh);
       addArtworkGradient(svg, 'appearance-gta-pattern-gradient', [
         ['0%', 'var(--theme-color-pattern-glow)'],
         ['50%', 'var(--theme-color-backdrop-pattern)'],

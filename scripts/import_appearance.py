@@ -54,9 +54,9 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=47')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=48')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=46'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=47'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=2',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 

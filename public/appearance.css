@@ -40,9 +40,17 @@
   border-radius: 12px;
 }
 
-[data-appearance-header] {
-  background-image: linear-gradient(90deg, var(--theme-color-header-gradient-start),
-    var(--theme-color-brand-header), var(--theme-color-header-gradient-end));
+[data-appearance-header],
+.appearance-header-mesh {
+  background-image:
+    radial-gradient(ellipse 42% 170% at 12% 105%, var(--theme-color-header-mesh-left), transparent),
+    radial-gradient(ellipse 58% 145% at 45% -38%, var(--theme-color-header-mesh-middle), transparent),
+    radial-gradient(ellipse 54% 210% at 93% 10%, var(--theme-color-header-mesh-right), transparent);
+}
+
+.appearance-header-mesh {
+  width: 100%;
+  height: 100%;
 }
 
 [data-appearance-header] :is(.header__logo, .header__back-button, .quick-search-button,
