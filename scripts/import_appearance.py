@@ -18,8 +18,7 @@ THEMES = (
     ('future', 'Будущее'),
     ('custom', 'Своя тема'),
 )
-VISIBLE_THEMES = {'classic', 'contrast', 'gta'}
-LOCAL_THEMES = {'games'}
+VISIBLE_THEMES = {'classic', 'contrast', 'games', 'gta'}
 
 
 def pattern_slider(page, slider_id, label, minimum, maximum, prop=None):
@@ -140,9 +139,7 @@ def main():
         card = deepcopy(template)
         card.attrs.pop('data-gtm-click', None)
         card['data-appearance-theme'] = theme
-        if theme in LOCAL_THEMES:
-            card['data-local-preview'] = ''
-        elif theme not in VISIBLE_THEMES:
+        if theme not in VISIBLE_THEMES:
             card['hidden'] = ''
         selected = theme == 'classic'
         if not selected:
