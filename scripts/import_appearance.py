@@ -57,7 +57,7 @@ def main():
     page.head.select_one('link[href="/platform.css"]').replace_with(
         page.new_tag('link', rel='stylesheet', href='/appearance.css?v=52')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=54'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=55'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=2',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 

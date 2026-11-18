@@ -101,7 +101,7 @@
 
   const patternedThemes = {
     games: 'games-pattern.svg', gaming: 'gaming.svg', cats: 'cats.svg',
-    filippovost: 'premium.svg', gta: 'gta-pattern.png',
+    filippovost: 'premium.svg', gta: 'pattern-gta.svg',
   };
 
   function patternFor(themeId) {

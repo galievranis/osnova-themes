@@ -313,7 +313,7 @@ $('#export-colors').onclick=()=>{
 };
 
 async function embeddedGtaMask(){
- const response=await fetch('../gta-pattern.png');
+ const response=await fetch('../pattern-gta.svg');
  if(!response.ok)throw Error('GTA pattern unavailable');
  const blob=await response.blob();
  return new Promise((resolve,reject)=>{
