@@ -417,8 +417,8 @@
     "name": "Игры",
     "source": "classic",
     "light": {
-      "--theme-color-brand-header": "#E5F0D4",
-      "--theme-gradient-brand-header": "linear-gradient(to bottom, #F1F7E8, #DCEBCC)",
+      "--theme-color-brand-header": "#D2F447",
+      "--theme-gradient-brand-header": "linear-gradient(to bottom, var(--theme-color-brand-header), #C4F354 55%, #B7F068)",
       "--theme-color-accent": "#3F6200",
       "--theme-color-accent-strong": "#345200",
       "--theme-color-accent-strongest": "#2B4300",
