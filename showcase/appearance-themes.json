@@ -131,7 +131,7 @@
       "--theme-color-accent-strong": "#C6A9FF",
       "--theme-color-accent-strongest": "#D5BFFF",
       "--theme-color-on-fill": "#24143D",
-      "--theme-opacity-backdrop-pattern": "10%",
+      "--theme-opacity-backdrop-pattern": "15%",
       "--theme-size-backdrop-pattern": "550px"
     }
   },
@@ -162,7 +162,7 @@
       "--theme-color-popover-background": "var(--theme-color-background-content)",
       "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
       "--theme-color-backdrop-pattern": "rgb(70, 53, 110)",
-      "--theme-opacity-backdrop-pattern": "20%",
+      "--theme-opacity-backdrop-pattern": "10%",
       "--theme-size-backdrop-pattern": "550px"
     },
     "dark": {
@@ -191,7 +191,7 @@
       "--theme-color-popover-background": "var(--theme-color-background-content)",
       "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
       "--theme-color-backdrop-pattern": "rgb(193, 151, 255)",
-      "--theme-opacity-backdrop-pattern": "20%",
+      "--theme-opacity-backdrop-pattern": "15%",
       "--theme-size-backdrop-pattern": "550px"
     }
   },
@@ -255,7 +255,7 @@
       "--theme-color-header-icon": "#FFF2E7",
       "--theme-color-on-fill": "#30212A",
       "--theme-color-backdrop-pattern": "rgb(234, 193, 157)",
-      "--theme-opacity-backdrop-pattern": "10%",
+      "--theme-opacity-backdrop-pattern": "15%",
       "--theme-size-backdrop-pattern": "550px"
     }
   },
@@ -426,7 +426,7 @@
       "--theme-color-text-primary": "#162432",
       "--theme-color-backdrop-pattern": "var(--theme-color-accent)",
       "--theme-size-backdrop-pattern": "550px",
-      "--theme-opacity-backdrop-pattern": "18%"
+      "--theme-opacity-backdrop-pattern": "10%"
     },
     "dark": {
       "--theme-color-brand-header": "#101E32",
@@ -438,7 +438,7 @@
       "--theme-color-text-primary": "#E9F1F8",
       "--theme-color-backdrop-pattern": "var(--theme-color-accent)",
       "--theme-size-backdrop-pattern": "550px",
-      "--theme-opacity-backdrop-pattern": "14%"
+      "--theme-opacity-backdrop-pattern": "15%"
     }
   }
 ]
