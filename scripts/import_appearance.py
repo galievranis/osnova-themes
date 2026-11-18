@@ -54,10 +54,10 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=52')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=53')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=55'
-    page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=2',
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=56'
+    page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=3',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
     desktop_header = page.select_one('.bar--top > .header')

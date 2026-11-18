@@ -1,6 +1,6 @@
 (async()=>{
 const $=s=>document.querySelector(s),frame=$('#preview');let name=$('#themes')?.selectedOptions[0]?.textContent||'theme';
-const source=await fetch('theme-preview.svg?v=2').then(r=>r.text());
+const source=await fetch('theme-preview.svg?v=3').then(r=>r.text());
 function artwork(){
  const svg=new DOMParser().parseFromString(source,'image/svg+xml').documentElement;
  const root=frame.contentDocument?.documentElement;

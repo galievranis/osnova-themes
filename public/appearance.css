@@ -80,14 +80,14 @@
 .appearance-backdrop-pattern {
   fill: var(--theme-color-backdrop-pattern);
   mask-size: calc(var(--theme-size-backdrop-pattern) * 32 / 107);
+  opacity: calc(var(--theme-opacity-backdrop-pattern) * 2.2);
 }
 
 [data-appearance-theme="gta"] .appearance-backdrop-pattern {
   fill: url(#appearance-gta-pattern-gradient);
 }
 
-[data-appearance-pattern] > body::before,
-.appearance-backdrop-pattern {
+[data-appearance-pattern] > body::before {
   opacity: var(--theme-opacity-backdrop-pattern);
 }
 
