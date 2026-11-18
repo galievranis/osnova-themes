@@ -99,7 +99,10 @@
   const themeStyle = document.createElement('style');
   document.head.append(themeStyle);
 
-  const patternedThemes = { gaming: 'gaming.svg', cats: 'cats.svg', filippovost: 'premium.svg', gta: 'gta-pattern.png' };
+  const patternedThemes = {
+    games: 'games-pattern.svg', gaming: 'gaming.svg', cats: 'cats.svg',
+    filippovost: 'premium.svg', gta: 'gta-pattern.png',
+  };
 
   function patternFor(themeId) {
     const patternId = themeId === 'custom' ? customPalette.pattern : themeId;
@@ -158,7 +161,7 @@
     else if (Object.hasOwn(patternedThemes, themeId)) {
       addArtworkPattern(svg, patternFor(themeId));
     }
-    if (themeId === 'gta') {
+    if (Object.values(themes.get(themeId)?.modes ?? {}).some(tokens => tokens['--theme-gradient-brand-header'])) {
       const header = svg.querySelector('[data-token="--theme-color-brand-header"]');
       const mesh = document.createElementNS(svg.namespaceURI, 'foreignObject');
       mesh.setAttribute('width', '100%');
@@ -167,6 +170,8 @@
       fill.className = 'appearance-header-mesh';
       mesh.append(fill);
       header.after(mesh);
+    }
+    if (themeId === 'gta') {
       addArtworkGradient(svg, 'appearance-gta-pattern-gradient', [
         ['0%', 'var(--theme-color-pattern-glow)'],
         ['50%', 'var(--theme-color-backdrop-pattern)'],

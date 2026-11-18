@@ -8,7 +8,7 @@ from import_preview_screens import archive_resources, prepare_page, read_archive
 THEMES = (
     ('classic', 'Классика'),
     ('contrast', 'Контраст'),
-    ('lime', 'Транспорт'),
+    ('games', 'Игры'),
     ('sapphire', 'Легенды'),
     ('mint', 'Деньги'),
     ('filippovost', 'Филипповость'),
@@ -19,6 +19,7 @@ THEMES = (
     ('custom', 'Своя тема'),
 )
 VISIBLE_THEMES = {'classic', 'contrast', 'gta'}
+LOCAL_THEMES = {'games'}
 
 
 def pattern_slider(page, slider_id, label, minimum, maximum, prop=None):
@@ -56,7 +57,7 @@ def main():
     page.head.select_one('link[href="/platform.css"]').replace_with(
         page.new_tag('link', rel='stylesheet', href='/appearance.css?v=52')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=51'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=54'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=2',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
@@ -139,7 +140,9 @@ def main():
         card = deepcopy(template)
         card.attrs.pop('data-gtm-click', None)
         card['data-appearance-theme'] = theme
-        if theme not in VISIBLE_THEMES:
+        if theme in LOCAL_THEMES:
+            card['data-local-preview'] = ''
+        elif theme not in VISIBLE_THEMES:
             card['hidden'] = ''
         selected = theme == 'classic'
         if not selected:

@@ -121,7 +121,7 @@
       "--theme-color-accent-strong": "#5C2DB5",
       "--theme-color-accent-strongest": "#4D249C",
       "--theme-opacity-backdrop-pattern": "10%",
-      "--theme-size-backdrop-pattern": "400px"
+      "--theme-size-backdrop-pattern": "550px"
     },
     "dark": {
       "--theme-color-brand-header": "#FFFFFF",
@@ -132,7 +132,7 @@
       "--theme-color-accent-strongest": "#D5BFFF",
       "--theme-color-on-fill": "#24143D",
       "--theme-opacity-backdrop-pattern": "10%",
-      "--theme-size-backdrop-pattern": "400px"
+      "--theme-size-backdrop-pattern": "550px"
     }
   },
   {
@@ -163,7 +163,7 @@
       "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
       "--theme-color-backdrop-pattern": "rgb(70, 53, 110)",
       "--theme-opacity-backdrop-pattern": "20%",
-      "--theme-size-backdrop-pattern": "400px"
+      "--theme-size-backdrop-pattern": "550px"
     },
     "dark": {
       "--theme-color-background": "#241537",
@@ -192,7 +192,7 @@
       "--theme-color-accent-tint": "color-mix(in srgb, var(--theme-color-accent) 12%, transparent)",
       "--theme-color-backdrop-pattern": "rgb(193, 151, 255)",
       "--theme-opacity-backdrop-pattern": "20%",
-      "--theme-size-backdrop-pattern": "400px"
+      "--theme-size-backdrop-pattern": "550px"
     }
   },
   {
@@ -226,7 +226,7 @@
       "--theme-color-header-icon": "#382B32",
       "--theme-color-backdrop-pattern": "rgb(118, 76, 58)",
       "--theme-opacity-backdrop-pattern": "10%",
-      "--theme-size-backdrop-pattern": "400px"
+      "--theme-size-backdrop-pattern": "550px"
     },
     "dark": {
       "--theme-color-background": "#2B222A",
@@ -256,7 +256,7 @@
       "--theme-color-on-fill": "#30212A",
       "--theme-color-backdrop-pattern": "rgb(234, 193, 157)",
       "--theme-opacity-backdrop-pattern": "10%",
-      "--theme-size-backdrop-pattern": "400px"
+      "--theme-size-backdrop-pattern": "550px"
     }
   },
   {
@@ -410,6 +410,35 @@
       "--theme-color-button-primary-hover": "var(--theme-color-accent-strong)",
       "--theme-color-button-primary-pressed": "var(--theme-color-accent-strongest)",
       "--theme-color-button-on-primary": "var(--theme-color-on-fill)"
+    }
+  },
+  {
+    "id": "games",
+    "name": "Игры",
+    "source": "classic",
+    "light": {
+      "--theme-color-brand-header": "#DCE9FA",
+      "--theme-gradient-brand-header": "radial-gradient(ellipse 48% 175% at 5% 110%, #9FC4FF, transparent), radial-gradient(ellipse 48% 140% at 53% -35%, #BFE8FC, transparent), radial-gradient(ellipse 39% 205% at 97% 15%, #D2F66A, transparent)",
+      "--theme-color-accent": "#3F6200",
+      "--theme-color-accent-strong": "#345200",
+      "--theme-color-accent-strongest": "#2B4300",
+      "--theme-color-background": "#EDF2F7",
+      "--theme-color-text-primary": "#162432",
+      "--theme-color-backdrop-pattern": "var(--theme-color-accent)",
+      "--theme-size-backdrop-pattern": "550px",
+      "--theme-opacity-backdrop-pattern": "18%"
+    },
+    "dark": {
+      "--theme-color-brand-header": "#101E32",
+      "--theme-gradient-brand-header": "radial-gradient(ellipse 48% 175% at 5% 110%, #17458D, transparent), radial-gradient(ellipse 48% 140% at 53% -35%, #23596F, transparent), radial-gradient(ellipse 39% 205% at 97% 15%, #405E17, transparent)",
+      "--theme-color-accent": "#C4FF38",
+      "--theme-color-accent-strong": "#D1FF66",
+      "--theme-color-accent-strongest": "#DEFF94",
+      "--theme-color-background": "#111821",
+      "--theme-color-text-primary": "#E9F1F8",
+      "--theme-color-backdrop-pattern": "var(--theme-color-accent)",
+      "--theme-size-backdrop-pattern": "550px",
+      "--theme-opacity-backdrop-pattern": "14%"
     }
   }
 ]

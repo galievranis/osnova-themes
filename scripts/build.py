@@ -27,6 +27,9 @@ def build_pages(themes, appearance_themes):
     shutil.rmtree(output, ignore_errors=True)
     output.mkdir()
     page = (public / 'appearance.html').read_text(encoding='utf-8')
+    local_cards = re.compile(r'<button\b[^>]*\bdata-local-preview=""[^>]*>.*?</button>', re.DOTALL)
+    local_ids = set(re.findall(r'data-appearance-theme="([^"]+)"', ''.join(local_cards.findall(page))))
+    page = local_cards.sub('', page)
     page = page.replace('href="/local.html"', 'aria-disabled="true"')
     page = page.replace('href="/appearance.html"', 'href="./"')
     (output / 'index.html').write_text(page, encoding='utf-8')
@@ -39,7 +42,7 @@ def build_pages(themes, appearance_themes):
 
     theme_ids = set(re.findall(r'data-appearance-theme="([^"]+)"', page))
     write_catalog(output / 'themes.json', [theme for theme in themes if theme['id'] in theme_ids])
-    write_catalog(output / 'appearance-themes.json', appearance_themes)
+    write_catalog(output / 'appearance-themes.json', [theme for theme in appearance_themes if theme['id'] not in local_ids])
     relativize_html(output)
     print('Built the standalone appearance page in dist-pages/')
 
