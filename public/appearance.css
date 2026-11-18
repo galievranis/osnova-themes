@@ -79,7 +79,7 @@
 
 .appearance-backdrop-pattern {
   fill: var(--theme-color-backdrop-pattern);
-  mask-size: calc(var(--theme-size-backdrop-pattern) * 32 / 107);
+  mask-size: calc(var(--theme-size-backdrop-pattern) * 0.55);
   opacity: calc(var(--theme-opacity-backdrop-pattern) * 2.2);
 }
 

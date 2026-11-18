@@ -15,10 +15,11 @@ THEMES = (
     ('gaming', 'Игровой'),
     ('cats', 'Коты'),
     ('gta', 'GTA'),
+    ('dtf', 'DTF'),
     ('future', 'Будущее'),
     ('custom', 'Своя тема'),
 )
-VISIBLE_THEMES = {'classic', 'contrast', 'games', 'gta'}
+VISIBLE_THEMES = {'classic', 'contrast', 'games', 'gta', 'dtf'}
 
 
 def pattern_slider(page, slider_id, label, minimum, maximum, prop=None):
@@ -54,10 +55,10 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=53')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=55')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=56'
-    page.head.append(page.new_tag('link', rel='preload', href='/theme-preview.svg?v=3',
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=58'
+    page.head.append(page.new_tag('link', rel='preload', href='/theme-preview-dtf.svg',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
     desktop_header = page.select_one('.bar--top > .header')
@@ -65,6 +66,13 @@ def main():
     mobile_header = deepcopy(mobile.select_one('.bar--top > .header'))
     mobile_header['data-appearance-header'] = 'mobile'
     desktop_header.insert_after(mobile_header)
+    for header in (desktop_header, mobile_header):
+        link = header.select_one('.header__logo')
+        link['aria-label'] = 'DTF'
+        logo = page.new_tag('svg', width='70', height='23', viewBox='0 0 70 23',
+                            attrs={'aria-hidden': 'true'})
+        logo.append(page.new_tag('use', href='/dtf-logo.svg#dtf-wordmark'))
+        link.select_one('svg').replace_with(logo)
 
     first_item = page.select_one('.aside--left .z4vyLIzO')
     first_item['class'].append('RCt5iwch')
@@ -154,7 +162,7 @@ def main():
         card.select_one('.K0bZe5rs').string = label
         grid.append(card)
 
-    write_screen(page, 'appearance.html', 'Оформление')
+    write_screen(page, 'appearance.html', 'Оформление', brand='DTF')
 
 
 if __name__ == '__main__':

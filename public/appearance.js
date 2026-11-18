@@ -24,7 +24,7 @@
   const [catalog, extraThemes, source] = await Promise.all([
     load('themes.json').then(response => response.json()),
     load('appearance-themes.json').then(response => response.json()),
-    load('theme-preview.svg?v=3').then(response => response.text()),
+    load('theme-preview-dtf.svg').then(response => response.text()),
   ]);
   const template = new DOMParser().parseFromString(source, 'image/svg+xml').documentElement;
   const themes = new Map([...catalog, ...extraThemes].map(theme => [theme.id, theme]));
@@ -100,7 +100,7 @@
   document.head.append(themeStyle);
 
   const patternedThemes = {
-    games: 'games-pattern.svg', gaming: 'gaming.svg', cats: 'cats.svg',
+    games: 'games-pattern.svg', dtf: 'dtf-pattern.svg', gaming: 'gaming.svg', cats: 'cats.svg',
     filippovost: 'premium.svg', gta: 'pattern-gta.svg',
   };
 

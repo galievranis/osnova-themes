@@ -1,0 +1,17 @@
+<svg width="192" height="116" viewBox="0 0 192 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_36790_93633)">
+<rect data-token="--theme-color-background-content" width="192" height="116" fill="white"/>
+<path data-token="--theme-color-background" d="M0 0H192V116H0V0Z" fill="#F2F2F2"/>
+<path data-token="--theme-color-brand-header" d="M0 0H192V36H0V0Z" fill="#D9F0FF"/>
+<path data-token="--theme-color-text-primary" d="M17.1072 12.952C19.2765 12.952 21.0412 14.7011 21.0408 16.8514V19.1483C21.0408 21.2986 19.2765 23.0477 17.1072 23.0477H10.8572V12.952H17.1072ZM31.4753 15.4901H27.9001V23.0262H25.3396V15.4901H21.7644V12.952H31.4753V15.4901ZM41.1433 12.952V15.4901H35.4353V17.5204H39.7537V19.9178H35.4353V23.0262H32.8748V12.952H41.1433ZM13.4167 20.5087H17.1072C17.8639 20.5087 18.4783 19.898 18.4783 19.1483V16.8514C18.4783 16.1001 17.8633 15.4913 17.1072 15.4911H13.4167V20.5087Z" fill="black"/>
+<path data-token="--theme-color-background-content" d="M20 62C20 58.6863 22.6863 56 26 56H192V116H20V62Z" fill="white"/>
+<rect data-token="--theme-color-text-primary" opacity="0.1" x="32" y="68" width="148" height="6" rx="3" fill="black"/>
+<rect data-token="--theme-color-text-primary" opacity="0.1" x="32" y="81" width="100" height="6" rx="3" fill="black"/>
+<rect data-token="--theme-color-accent" x="32" y="94" width="48" height="12" rx="6" fill="#0A5DD8"/>
+</g>
+<defs>
+<clipPath id="clip0_36790_93633">
+<rect width="192" height="116" fill="white"/>
+</clipPath>
+</defs>
+</svg>

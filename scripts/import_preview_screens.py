@@ -129,7 +129,7 @@ def prepare_page(part, resolve, localize_css):
     return page
 
 
-def write_screen(page, filename, title, modal_return=None):
+def write_screen(page, filename, title, modal_return=None, *, brand='vc.ru'):
     overlay = page.select_one('.modal-overlay')
     if modal_return:
         if not overlay:
@@ -149,7 +149,7 @@ def write_screen(page, filename, title, modal_return=None):
             overlay.decompose()
         page.html['style'] = re.sub(r'overflow:\s*hidden\s*;?', '', page.html.get('style', ''))
 
-    page.title.string = f'[PD] {title} — vc.ru'
+    page.title.string = f'[PD] {title} — {brand}'
     markup = str(page).replace('viewbox=', 'viewBox=').replace('preserveaspectratio=', 'preserveAspectRatio=')
     (PUBLIC / filename).write_text(markup, encoding='utf-8')
 

@@ -1,5 +1,27 @@
 [
   {
+    "id": "classic",
+    "name": "Классика",
+    "source": "classic",
+    "light": {
+      "--theme-color-brand-primary": "#1793E6",
+      "--theme-color-brand-primary-bright": "#19A3FF",
+      "--theme-color-brand-header": "#D9F0FF",
+      "--theme-color-brand-background": "#F0F9FF",
+      "--theme-color-brand-distribution-background": "#E8F6FF",
+      "--theme-color-brand-icon": "#BEE2FA",
+      "--theme-color-brand-content-background": "#D9F0FF"
+    },
+    "dark": {
+      "--theme-color-brand-primary": "#197ABA",
+      "--theme-color-brand-primary-bright": "#19A3FF",
+      "--theme-color-brand-header": "#26282B",
+      "--theme-color-brand-distribution-background": "#313335",
+      "--theme-color-brand-icon": "#43474A",
+      "--theme-color-brand-content-background": "#2D3135"
+    }
+  },
+  {
     "id": "mint",
     "name": "Деньги",
     "source": "classic",
@@ -439,6 +461,36 @@
       "--theme-color-backdrop-pattern": "var(--theme-color-accent)",
       "--theme-size-backdrop-pattern": "550px",
       "--theme-opacity-backdrop-pattern": "15%"
+    }
+  },
+  {
+    "id": "dtf",
+    "name": "DTF",
+    "source": "classic",
+    "light": {
+      "--theme-color-brand-primary": "#1793E6",
+      "--theme-color-brand-primary-bright": "#19A3FF",
+      "--theme-color-brand-header": "#D9F0FF",
+      "--theme-color-brand-background": "#F0F9FF",
+      "--theme-color-brand-distribution-background": "#E8F6FF",
+      "--theme-color-brand-icon": "#BEE2FA",
+      "--theme-color-brand-content-background": "#D9F0FF",
+      "--theme-color-background": "#F4FAFF",
+      "--theme-color-backdrop-pattern": "#2675A9",
+      "--theme-opacity-backdrop-pattern": "10%",
+      "--theme-size-backdrop-pattern": "550px"
+    },
+    "dark": {
+      "--theme-color-brand-primary": "#197ABA",
+      "--theme-color-brand-primary-bright": "#19A3FF",
+      "--theme-color-brand-header": "#26282B",
+      "--theme-color-brand-distribution-background": "#313335",
+      "--theme-color-brand-icon": "#43474A",
+      "--theme-color-brand-content-background": "#2D3135",
+      "--theme-color-background": "#1C2026",
+      "--theme-color-backdrop-pattern": "#7BB7DF",
+      "--theme-opacity-backdrop-pattern": "15%",
+      "--theme-size-backdrop-pattern": "550px"
     }
   }
 ]
