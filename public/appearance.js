@@ -1,4 +1,100 @@
 (async () => {
+  const components = document.getElementById('appearance-components');
+  const demoCheckbox = components.querySelector('.checkbox__input');
+  demoCheckbox.addEventListener('change', () => {
+    demoCheckbox.closest('.checkbox').classList.toggle('checkbox--checked', demoCheckbox.checked);
+  });
+  const demoRadios = [...components.querySelectorAll('.radio__input')];
+  components.addEventListener('change', event => {
+    if (!demoRadios.includes(event.target)) return;
+    for (const radio of demoRadios) {
+      radio.closest('.radio').classList.toggle('radio--checked', radio.checked);
+    }
+  });
+  const tabs = components.querySelector('.tabs');
+  function positionTabUnderline() {
+    const active = tabs.querySelector('.tabs__tab--active');
+    tabs.style.setProperty('--v61fc4ba7', `${active.offsetWidth}px`);
+    tabs.style.setProperty('--v9470c944', `${active.offsetLeft}px`);
+  }
+  tabs.addEventListener('click', event => {
+    const selected = event.target.closest('.tabs__tab');
+    if (!selected) return;
+    for (const tab of tabs.querySelectorAll('.tabs__tab')) {
+      tab.classList.toggle('tabs__tab--active', tab === selected);
+      tab.setAttribute('aria-pressed', String(tab === selected));
+    }
+    positionTabUnderline();
+  });
+  const tabObserver = new ResizeObserver(positionTabUnderline);
+  for (const tab of tabs.querySelectorAll('.tabs__tab')) tabObserver.observe(tab);
+  positionTabUnderline();
+
+  const demoSort = document.getElementById('appearance-components-sort');
+  const sortButton = demoSort.querySelector('.dropdown__label');
+  const sortMenu = demoSort.querySelector('.popover');
+  const sortOptions = [...sortMenu.querySelectorAll('[role="menuitemradio"]')];
+  const sortChevron = demoSort.querySelector('.dropdown__chevron');
+
+  function setSortOpen(open, focus = null) {
+    sortMenu.hidden = !open;
+    sortButton.setAttribute('aria-expanded', String(open));
+    const layer = open ? 'b' : 'a';
+    sortChevron.dataset.state = layer;
+    for (const icon of sortChevron.querySelectorAll('[data-layer]')) {
+      icon.setAttribute('aria-hidden', String(icon.dataset.layer !== layer));
+    }
+    focus?.focus();
+  }
+
+  sortButton.addEventListener('click', () => {
+    const open = sortMenu.hidden;
+    setSortOpen(open, open ? sortOptions.find(option => option.getAttribute('aria-checked') === 'true') : null);
+  });
+  for (const option of sortOptions) {
+    option.addEventListener('click', () => {
+      for (const item of sortOptions) {
+        item.classList.toggle('context-list-option--selected', item === option);
+        item.setAttribute('aria-checked', String(item === option));
+      }
+      sortButton.querySelector('[data-sort-label]').textContent = option.textContent.trim();
+      setSortOpen(false, sortButton);
+    });
+  }
+  demoSort.addEventListener('keydown', event => {
+    const key = event.key;
+    if (key === 'Escape' && !sortMenu.hidden) {
+      event.preventDefault();
+      setSortOpen(false, sortButton);
+      return;
+    }
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(key)) return;
+    event.preventDefault();
+    const index = sortOptions.indexOf(document.activeElement);
+    const last = sortOptions.length - 1;
+    const next = key === 'Home' || (key === 'ArrowDown' && index === last) ? 0 :
+      key === 'End' || (key === 'ArrowUp' && index <= 0) ? last :
+      index + (key === 'ArrowDown' ? 1 : -1);
+    setSortOpen(true, sortOptions[next]);
+  });
+  document.addEventListener('click', event => {
+    if (!sortMenu.hidden && !demoSort.contains(event.target)) setSortOpen(false);
+  });
+  demoSort.addEventListener('focusout', event => {
+    if (!sortMenu.hidden && !demoSort.contains(event.relatedTarget)) setSortOpen(false);
+  });
+
+  for (const [selector, activeClass] of [
+    ['.reaction-item', 'reaction-item--active'],
+    ['.content-footer-button[aria-pressed]', 'content-footer-button--active'],
+  ]) {
+    for (const button of components.querySelectorAll(selector)) {
+      button.addEventListener('click', () => {
+        button.setAttribute('aria-pressed', String(button.classList.toggle(activeClass)));
+      });
+    }
+  }
+
   async function load(file) {
     const response = await fetch(file);
     if (!response.ok) throw new Error(`Не удалось загрузить ${file}`);
@@ -21,12 +117,18 @@
   const imageRemove = document.getElementById('appearance-image-remove');
   const imageStatus = document.getElementById('appearance-image-status');
   const radios = [...document.querySelectorAll('input[name="color-mode"]')];
-  const [catalog, extraThemes, source] = await Promise.all([
+  const [catalog, extraThemes, source, vcSource] = await Promise.all([
     load('themes.json').then(response => response.json()),
     load('appearance-themes.json').then(response => response.json()),
     load('theme-preview-dtf.svg').then(response => response.text()),
+    load('theme-preview.svg').then(response => response.text()),
   ]);
   const template = new DOMParser().parseFromString(source, 'image/svg+xml').documentElement;
+  const vcTemplate = new DOMParser().parseFromString(vcSource, 'image/svg+xml').documentElement;
+  const logos = [...document.querySelectorAll('[data-appearance-header] .header__logo')].map(link => ({
+    link, dtf: link.querySelector('svg').cloneNode(true),
+  }));
+  const vcLogo = document.getElementById('appearance-vc-logo').content.querySelector('svg');
   const themes = new Map([...catalog, ...extraThemes].map(theme => [theme.id, theme]));
   const systemMode = matchMedia('(prefers-color-scheme: dark)');
   const storageKey = 'osnova-appearance-preview';
@@ -100,7 +202,7 @@
   document.head.append(themeStyle);
 
   const patternedThemes = {
-    games: 'games-pattern.svg', dtf: 'dtf-pattern.svg', gaming: 'gaming.svg', cats: 'cats.svg',
+    'vc-legends': 'legends.svg#mask', games: 'games-pattern.svg', dtf: 'dtf-pattern.svg', gaming: 'gaming.svg', cats: 'cats.svg',
     filippovost: 'premium.svg', gta: 'pattern-gta.svg',
   };
 
@@ -139,7 +241,7 @@
   }
 
   function makeArtwork(themeId) {
-    const svg = document.importNode(template, true);
+    const svg = document.importNode(themeId === 'vc-legends' ? vcTemplate : template, true);
     const references = new Map();
     for (const node of svg.querySelectorAll('[id]')) {
       const id = node.id;
@@ -303,6 +405,7 @@
       '--theme-color-button-transparent-hover': cardState(0.08),
       '--theme-color-button-transparent-pressed': cardState(0.14),
       '--theme-color-button-minimal': cardState(0.06),
+      '--theme-color-round-button-background': 'var(--theme-color-button-minimal)',
       '--theme-color-button-minimal-hover': cardState(0.12),
       '--theme-color-button-minimal-pressed': cardState(0.18),
       '--theme-color-button-subtle': card,
@@ -338,6 +441,13 @@
       ...grays,
       ...modes[custom ? 'light' : mode],
     };
+    if (themeId === 'vc-legends') {
+      delete tokens['--theme-background-pattern'];
+      delete tokens['--theme-size-background-pattern'];
+      tokens['--theme-color-backdrop-pattern'] = mode === 'dark' ? '#FFFFFF' : '#000000';
+      tokens['--theme-size-backdrop-pattern'] = '550px';
+      tokens['--theme-opacity-backdrop-pattern'] = mode === 'dark' ? '15%' : '10%';
+    }
     if (custom) {
       const { pattern, ...colors } = customPalette;
       Object.assign(tokens, colors);
@@ -411,6 +521,14 @@
     const root = document.documentElement;
     const custom = selectedTheme === 'custom';
     const palette = themeTokens(selectedTheme, mode);
+    const isVc = selectedTheme === 'vc-legends';
+    for (const { link, dtf } of logos) {
+      const label = isVc ? 'vc.ru' : 'DTF';
+      if (link.getAttribute('aria-label') !== label) {
+        link.querySelector('svg').replaceWith((isVc ? vcLogo : dtf).cloneNode(true));
+        link.setAttribute('aria-label', label);
+      }
+    }
     const surface = resolveHex(palette, '--theme-color-background-content');
     const nativeScheme = custom ? (luminance(surface) < 0.179 ? 'dark' : 'light') : mode;
     root.dataset.colorMode = custom ? 'light' : mode;

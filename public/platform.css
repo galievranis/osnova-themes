@@ -520,5 +520,5 @@
 
 :root > body {
   background-image: var(--theme-background-pattern, none);
-  background-size: 24px 24px;
+  background-size: var(--theme-size-background-pattern, 24px) var(--theme-size-background-pattern, 24px);
 }

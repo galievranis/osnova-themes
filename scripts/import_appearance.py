@@ -3,6 +3,8 @@ import argparse
 from copy import deepcopy
 from pathlib import Path
 
+from bs4 import BeautifulSoup
+
 from import_preview_screens import archive_resources, prepare_page, read_archive, write_screen
 
 THEMES = (
@@ -55,9 +57,9 @@ def main():
     page.head.insert(0, page.new_tag('meta', charset='utf-8'))
     page.head.append(page.new_tag('link', rel='icon', href='data:,'))
     page.head.select_one('link[href="/platform.css"]').replace_with(
-        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=55')
+        page.new_tag('link', rel='stylesheet', href='/appearance.css?v=60')
     )
-    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=58'
+    page.head.select_one('script[src="/platform.js"]')['src'] = '/appearance.js?v=62'
     page.head.append(page.new_tag('link', rel='preload', href='/theme-preview-dtf.svg',
                                   attrs={'as': 'fetch', 'crossorigin': 'anonymous'}))
 
@@ -162,6 +164,8 @@ def main():
         card.select_one('.K0bZe5rs').string = label
         grid.append(card)
 
+    components = Path(__file__).with_name('appearance-components.html').read_text(encoding='utf-8')
+    page.select_one('.settings-wrapper').insert_after(BeautifulSoup(components, 'html.parser').section)
     write_screen(page, 'appearance.html', 'Оформление', brand='DTF')
 
 

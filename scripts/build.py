@@ -33,7 +33,7 @@ def build_pages(themes, appearance_themes):
 
     for name in ('appearance.css', 'appearance.js', 'theme-preview-dtf.svg', 'dtf-logo.svg',
                  'gaming.svg', 'cats.svg', 'premium.svg', 'pattern-gta.svg', 'games-pattern.svg',
-                 'dtf-pattern.svg'):
+                 'dtf-pattern.svg', 'legends.svg', 'theme-preview.svg'):
         shutil.copyfile(public / name, output / name)
     for name in ('original', 'placeholders'):
         shutil.copytree(public / name, output / name, ignore=shutil.ignore_patterns('*.html', '.DS_Store'))
