@@ -273,6 +273,12 @@
       mesh.append(fill);
       header.after(mesh);
     }
+    if (themeId === 'vc-legends') {
+      addArtworkGradient(svg, 'appearance-legends-pattern-gradient', [
+        ['0%', 'var(--theme-color-backdrop-pattern)'],
+        ['100%', 'var(--theme-color-pattern-gradient-end)'],
+      ], '1');
+    }
     if (themeId === 'gta') {
       addArtworkGradient(svg, 'appearance-gta-pattern-gradient', [
         ['0%', 'var(--theme-color-pattern-glow)'],
@@ -444,9 +450,8 @@
     if (themeId === 'vc-legends') {
       delete tokens['--theme-background-pattern'];
       delete tokens['--theme-size-background-pattern'];
-      tokens['--theme-color-backdrop-pattern'] = mode === 'dark' ? '#FFFFFF' : '#000000';
       tokens['--theme-size-backdrop-pattern'] = '550px';
-      tokens['--theme-opacity-backdrop-pattern'] = mode === 'dark' ? '15%' : '10%';
+      tokens['--theme-opacity-backdrop-pattern'] = mode === 'dark' ? '32%' : '10%';
     }
     if (custom) {
       const { pattern, ...colors } = customPalette;

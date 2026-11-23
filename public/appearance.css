@@ -542,3 +542,7 @@
 #appearance-theme-grid > [data-appearance-theme="vc-legends"] {
   grid-column-start: 1;
 }
+
+[data-appearance-theme="vc-legends"] .appearance-backdrop-pattern {
+  fill: url(#appearance-legends-pattern-gradient);
+}

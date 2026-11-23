@@ -2935,24 +2935,44 @@
   },
   {
     "id": "vc-legends",
-    "name": "Легенды vc.ru",
+    "name": "Легенды",
     "source": "classic",
     "group": "Другие темы",
     "light": {
-      "--theme-color-button-primary": "#0B4FB7",
-      "--theme-color-button-primary-hover": "#0C48AB",
-      "--theme-color-button-primary-pressed": "#10439C",
+      "--theme-color-button-primary": "#CD4400",
+      "--theme-color-button-primary-hover": "#C64100",
+      "--theme-color-button-primary-pressed": "#BD3D00",
       "--theme-color-button-on-primary": "#FFFFFF",
       "--theme-background-pattern": "url(\"./legends.svg\")",
-      "--theme-size-background-pattern": "550px"
+      "--theme-size-background-pattern": "550px",
+      "--theme-color-brand-header": "#202124",
+      "--theme-color-header-icon": "#FFFFFF",
+      "--theme-color-background": "#F1F1F2",
+      "--theme-color-accent": "#CD4400",
+      "--theme-color-accent-strong": "#C64100",
+      "--theme-color-accent-strongest": "#BD3D00",
+      "--theme-color-on-fill": "#FFFFFF",
+      "--theme-color-backdrop-pattern": "#536078",
+      "--theme-color-pattern-gradient-end": "#746782",
+      "--theme-gradient-backdrop-pattern": "linear-gradient(135deg, #536078, #746782)"
     },
     "dark": {
-      "--theme-color-button-primary": "#70A8FF",
-      "--theme-color-button-primary-hover": "#7BB1FF",
-      "--theme-color-button-primary-pressed": "#68A2FA",
-      "--theme-color-button-on-primary": "#111111",
+      "--theme-color-button-primary": "#BD3D00",
+      "--theme-color-button-primary-hover": "#C64100",
+      "--theme-color-button-primary-pressed": "#CD4400",
+      "--theme-color-button-on-primary": "#FFFFFF",
       "--theme-background-pattern": "url(\"./legends.svg\")",
-      "--theme-size-background-pattern": "550px"
+      "--theme-size-background-pattern": "550px",
+      "--theme-color-brand-header": "#78350F",
+      "--theme-color-header-icon": "#FFFFFF",
+      "--theme-color-background": "#202124",
+      "--theme-color-accent": "#BD3D00",
+      "--theme-color-accent-strong": "#C64100",
+      "--theme-color-accent-strongest": "#CD4400",
+      "--theme-color-on-fill": "#FFFFFF",
+      "--theme-color-backdrop-pattern": "#91839F",
+      "--theme-color-pattern-gradient-end": "#C88557",
+      "--theme-gradient-backdrop-pattern": "linear-gradient(135deg, #91839F, #C88557)"
     }
   }
 ]
