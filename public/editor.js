@@ -114,7 +114,7 @@ ${selector} > body::before {
   outline-offset: -1px;
 }
 ${selector} .radio--checked .radio__control::after {
-  background-color: var(--theme-color-radio-dot);
+  background-color: var(--theme-color-radio-dot, var(--theme-color-field-icon));
 }`);
  }
  return rules.join('\n\n');

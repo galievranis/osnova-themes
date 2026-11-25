@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>[PD] Токены — Osnova</title><link rel="stylesheet" href="panel.css"></head>
+<body>
+<main>
+<div id="error" role="alert" hidden></div>
+<section class="tools">
+<div class="profile-bar"><select id="profile" aria-label="Текущая тема"><option value="">Тема сайта</option></select><button id="create-profile" title="Создать тему">＋</button><button id="rename-profile" title="Переименовать тему">✎</button><label title="Применять изменения"><input id="enabled" type="checkbox" checked> Вкл.</label></div>
+<div class="mode-bar"><div class="modes"><button id="light" type="button">Светлая</button><button id="dark" type="button">Тёмная</button></div><button id="inspect" type="button">⌖ Инспектор</button></div>
+<div id="inspection" hidden><span id="selection-label"></span><button id="clear-inspection" title="Показать все токены">×</button></div>
+<p class="hint" id="mode-hint" hidden></p>
+<details id="pattern-controls"><summary>Фоновый паттерн</summary>
+<div class="pattern-grid"><label>Рисунок<select id="pattern" aria-label="Рисунок паттерна"><option value="original">Исходный</option><option value="none">Без паттерна</option><option value="gta">GTA</option><option value="dtf">DTF</option><option value="games">Игры</option><option value="upload">Загрузить свой…</option><option value="custom" disabled>Свой рисунок</option></select></label>
+<div class="pattern-colors"><label>Цвет<input id="pattern-color" type="color" value="#b66adf"></label><label>Второй<input id="pattern-color-2" type="color" value="#f283be"></label><label><input id="pattern-gradient" type="checkbox"> Градиент</label></div>
+<div class="pattern-numbers"><label>Плитка, px<input id="pattern-size" type="number" min="20" max="2000" step="10" value="550"></label><label>Непрозрачность, %<input id="pattern-opacity" type="number" min="0" max="100" value="10"></label></div>
+<button id="pattern-reset" class="quiet">Вернуть исходный паттерн и цвета</button>
+</div></details>
+<input id="search" type="search" placeholder="Найти токен или значение" aria-label="Поиск токенов">
+<div class="filters"><select id="group" aria-label="Группа токенов"><option value="theme">Тема</option><option value="all">Все переменные</option><option value="gray">Базовые серые</option></select><label><input id="changed" type="checkbox"> Изменённые</label><button id="refresh" title="Перечитать CSS страницы">↻</button></div>
+</section>
+<div class="summary" id="summary" aria-live="polite"></div>
+<div id="tokens"></div>
+<details id="contrast-controls"><summary>Контраст</summary><div class="contrast-content"><button id="contrast-check" type="button">Проверить текущую схему</button><p class="hint">Цвета вычисляются браузером из текущей палитры. Проверяются текст, состояния, индикаторы и градиент шапки.</p><div id="contrast-result" role="status"></div></div></details><p class="hint" id="coverage"></p>
+</main>
+<footer><div class="exports"><button id="css">Экспорт CSS</button><button id="import">Импорт CSS</button></div><button id="reset" class="quiet">Сбросить обе схемы</button><input id="pattern-file" type="file" accept=".svg,.png,.webp,.jpg,.jpeg,image/svg+xml,image/png,image/webp,image/jpeg" hidden><input id="file" type="file" accept="text/css,.css" hidden><p id="status" role="status">Изменения сохраняются в этом браузере.</p></footer>
+<dialog id="shadow-editor" aria-labelledby="shadow-token">
+<div class="color-heading"><span id="shadow-token"></span><button id="shadow-cancel" type="button" aria-label="Отменить изменение тени">×</button></div>
+<div class="shadow-preview"><div id="shadow-preview-box">Предпросмотр</div></div>
+<div id="shadow-layers"></div>
+<textarea id="shadow-value" aria-label="CSS-значение тени" readonly rows="3"></textarea>
+<div class="color-actions"><span id="shadow-feedback" role="status"></span><button id="shadow-done" type="button">Готово</button></div>
+</dialog>
+<dialog id="color-editor" aria-labelledby="color-token">
+<div class="color-heading"><span id="color-token"></span><button id="color-cancel" type="button" aria-label="Отменить изменение цвета">×</button></div>
+<div id="color-sv" role="slider" tabindex="0" aria-label="Насыщенность и яркость" aria-valuemin="0" aria-valuemax="100"><span id="color-cursor"></span></div>
+<div class="color-sliders"><div id="color-preview" class="checker"><span id="color-preview-fill"></span></div><div class="color-tracks"><input id="color-hue" type="range" min="0" max="360" step="0.1" aria-label="Оттенок"><input id="color-alpha" type="range" min="0" max="100" step="0.1" aria-label="Непрозрачность цвета"></div></div>
+<div class="color-components"><label>HEX<input id="color-hex" type="text" spellcheck="false" maxlength="9"></label><label>R<input id="color-r" type="number" min="0" max="255"></label><label>G<input id="color-g" type="number" min="0" max="255"></label><label>B<input id="color-b" type="number" min="0" max="255"></label><label>A, %<input id="color-alpha-number" type="number" min="0" max="100" step="0.1"></label></div>
+<div class="color-output"><select id="color-format" aria-label="Формат цвета"><option value="rgba">RGBA</option><option value="hex">HEX</option></select><input id="color-value" type="text" aria-label="CSS-значение цвета" spellcheck="false"></div>
+<div class="color-actions"><span id="color-feedback" role="status"></span><button id="color-done" type="button">Готово</button></div>
+</dialog>
+<script src="color.js"></script><script src="picker.js"></script><script src="core.js"></script><script src="css-io.js"></script><script src="shadow.js"></script><script src="shadow-editor.js"></script><script src="pattern-state.js"></script><script src="panel.js"></script></body></html>

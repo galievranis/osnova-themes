@@ -176,7 +176,7 @@
 .appearance-backdrop-pattern {
   fill: var(--theme-color-backdrop-pattern);
   mask-size: calc(var(--theme-size-backdrop-pattern) * 0.55);
-  opacity: calc(var(--theme-opacity-backdrop-pattern) * 2.2);
+  opacity: var(--theme-opacity-backdrop-pattern);
 }
 
 [data-appearance-theme="gta"] .appearance-backdrop-pattern {
@@ -539,10 +539,66 @@
   font-size: 14px;
 }
 
-#appearance-theme-grid > [data-appearance-theme="vc-legends"] {
-  grid-column-start: 1;
+.appearance-brand-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.appearance-brand-tabs button {
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--theme-color-text-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.appearance-brand-tabs button:hover,
+.appearance-brand-tabs button[aria-selected="true"] {
+  background-color: var(--theme-color-field-background);
+}
+
+.appearance-brand-tabs button[aria-selected="true"] {
+  box-shadow: inset 0 -2px var(--theme-color-accent);
+}
+
+.appearance-brand-tabs button:focus-visible {
+  outline: 2px solid var(--theme-color-accent);
+  outline-offset: 2px;
 }
 
 [data-appearance-theme="vc-legends"] .appearance-backdrop-pattern {
   fill: url(#appearance-legends-pattern-gradient);
+}
+
+[data-muted-choice-controls] .radio:not(.radio--checked):not(:hover)
+  .radio__input:not(:disabled) ~ .radio__control,
+[data-muted-choice-controls] .checkbox:not(:hover)
+  .checkbox__input:not(:checked):not(:disabled) ~ .checkbox__control {
+  background-color: transparent;
+  border-color: var(--theme-color-radio-outline);
+}
+
+[data-muted-choice-controls] .radio:not(.radio--checked):not(:hover)
+  .radio__input:not(:disabled):not(:focus-visible) ~ .radio__control {
+  outline-color: transparent;
+}
+
+[data-muted-choice-controls] .radio .radio__input:focus-visible ~ .radio__control,
+[data-muted-choice-controls] .checkbox .checkbox__input:focus-visible ~ .checkbox__control {
+  outline: 2px solid var(--theme-color-accent);
+  outline-offset: 2px;
+}
+
+[data-appearance-theme="movies"] .appearance-backdrop-pattern {
+  fill: url(#appearance-movies-pattern-gradient);
+}
+
+[data-white-write-button] [data-appearance-write] > .button--type-secondary {
+  --button-bg-color: #fff;
+  --button-bg-color-hover: #f2f2f2;
+  --button-bg-color-active: #e6e6e6;
+  --button-text-color: #191919;
 }

@@ -130,6 +130,9 @@
   }));
   const vcLogo = document.getElementById('appearance-vc-logo').content.querySelector('svg');
   const themes = new Map([...catalog, ...extraThemes].map(theme => [theme.id, theme]));
+  themes.set('vc-contrast', themes.get('contrast'));
+  const brandTabs = [...document.querySelectorAll('[data-appearance-brand]')];
+  const themeBrand = id => id.startsWith('vc-') ? 'vc' : 'dtf';
   const systemMode = matchMedia('(prefers-color-scheme: dark)');
   const storageKey = 'osnova-appearance-preview';
   let preferences;
@@ -143,6 +146,8 @@
 
   let selectedTheme = cards.some(card => card.dataset.appearanceTheme === preferences?.theme)
     ? preferences.theme : 'classic';
+  const brandThemes = { dtf: 'classic', vc: 'vc-classic', ...preferences?.brandThemes };
+  brandThemes[themeBrand(selectedTheme)] = selectedTheme;
   let selectedMode = radios.some(radio => radio.value === preferences?.mode)
     ? preferences.mode : 'light';
 
@@ -202,7 +207,7 @@
   document.head.append(themeStyle);
 
   const patternedThemes = {
-    'vc-legends': 'legends.svg#mask', games: 'games-pattern.svg', dtf: 'dtf-pattern.svg', gaming: 'gaming.svg', cats: 'cats.svg',
+    music: 'music.svg', kojima: 'kojima.svg', movies: 'movies.svg', 'vc-legends': 'legends.svg#mask', games: 'games-pattern.svg', dtf: 'dtf-pattern.svg', gaming: 'gaming.svg', cats: 'cats.svg',
     filippovost: 'premium.svg', gta: 'pattern-gta.svg',
   };
 
@@ -241,7 +246,7 @@
   }
 
   function makeArtwork(themeId) {
-    const svg = document.importNode(themeId === 'vc-legends' ? vcTemplate : template, true);
+    const svg = document.importNode(themeId.startsWith('vc-') ? vcTemplate : template, true);
     const references = new Map();
     for (const node of svg.querySelectorAll('[id]')) {
       const id = node.id;
@@ -272,6 +277,13 @@
       fill.className = 'appearance-header-mesh';
       mesh.append(fill);
       header.after(mesh);
+    }
+    if (themeId === 'movies') {
+      addArtworkGradient(svg, 'appearance-movies-pattern-gradient', [
+        ['0%', 'var(--theme-color-backdrop-pattern)'],
+        ['57%', 'var(--theme-color-pattern-glow)'],
+        ['100%', 'var(--theme-color-pattern-gradient-end)'],
+      ], '.25');
     }
     if (themeId === 'vc-legends') {
       addArtworkGradient(svg, 'appearance-legends-pattern-gradient', [
@@ -451,7 +463,7 @@
       delete tokens['--theme-background-pattern'];
       delete tokens['--theme-size-background-pattern'];
       tokens['--theme-size-backdrop-pattern'] = '550px';
-      tokens['--theme-opacity-backdrop-pattern'] = mode === 'dark' ? '32%' : '10%';
+      tokens['--theme-opacity-backdrop-pattern'] = mode === 'dark' ? '15%' : '10%';
     }
     if (custom) {
       const { pattern, ...colors } = customPalette;
@@ -476,6 +488,18 @@
         const opacity = '--theme-opacity-backdrop-pattern';
         tokens[opacity] = patternSettings.opacity === undefined
           ? patternTokens[opacity] : `${patternSettings.opacity}%`;
+      }
+    }
+    if (!custom && mode === 'dark' && !['classic', 'contrast', 'vc-classic', 'vc-contrast'].includes(themeId)) {
+      const surface = resolveHex(tokens, '--theme-color-background-content');
+      if (/^#[0-9a-f]{6}$/i.test(surface)) {
+        const ink = resolveHex(tokens, '--theme-color-text-primary');
+        if (/^#[0-9a-f]{6}$/i.test(ink)) {
+          const direction = luminance(ink) > luminance(surface) ? '#FFFFFF' : '#000000';
+          tokens['--theme-color-field-background'] = mixHex(surface, direction, 0.07);
+          tokens['--theme-color-field-background-hover'] = mixHex(surface, direction, 0.11);
+          tokens['--theme-color-field-background-disabled'] = mixHex(surface, direction, 0.03);
+        }
       }
     }
     return tokens;
@@ -526,7 +550,19 @@
     const root = document.documentElement;
     const custom = selectedTheme === 'custom';
     const palette = themeTokens(selectedTheme, mode);
-    const isVc = selectedTheme === 'vc-legends';
+    const headerColor = resolveHex(palette, '--theme-color-brand-header');
+    const whiteWriteButton = /^#[0-9a-f]{6}$/i.test(headerColor)
+      && luminance(headerColor) <= 1.05 / 3 - 0.05;
+    root.toggleAttribute('data-white-write-button', whiteWriteButton);
+    root.toggleAttribute('data-muted-choice-controls', ['movies', 'kojima', 'music', 'tarantino', 'vc-future', 'vc-transport', 'vc-market', 'vc-money', 'vc-science', 'vc-memes'].includes(selectedTheme));
+    const brand = themeBrand(selectedTheme);
+    const isVc = brand === 'vc';
+    for (const tab of brandTabs) {
+      const active = tab.dataset.appearanceBrand === brand;
+      tab.setAttribute('aria-selected', String(active));
+      tab.tabIndex = active ? 0 : -1;
+      document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
+    }
     for (const { link, dtf } of logos) {
       const label = isVc ? 'vc.ru' : 'DTF';
       if (link.getAttribute('aria-label') !== label) {
@@ -549,7 +585,7 @@
     root.toggleAttribute('data-appearance-pattern', Boolean(pattern));
     if (pattern) root.style.setProperty('--appearance-pattern-image', `url('./${pattern}')`);
     else root.style.removeProperty('--appearance-pattern-image');
-    root.dataset.theme = selectedTheme === 'contrast' ? 'contrast' : 'classic';
+    root.dataset.theme = ['contrast', 'vc-contrast'].includes(selectedTheme) ? 'contrast' : 'classic';
     themeStyle.textContent = `:root[data-appearance][data-color-mode] { color-scheme: ${nativeScheme};\n${declarations(palette)}\n}`;
 
     customPanel.hidden = !custom;
@@ -570,14 +606,32 @@
   }
 
   function save() {
+    brandThemes[themeBrand(selectedTheme)] = selectedTheme;
     apply();
     try {
       localStorage.setItem(storageKey, JSON.stringify({
-        theme: selectedTheme, mode: selectedMode, customPalette, patternSettings, backgroundMode,
+        theme: selectedTheme, brandThemes, mode: selectedMode, customPalette, patternSettings, backgroundMode,
       }));
     } catch {
       // Selection still works when browser storage is unavailable.
     }
+  }
+
+  for (const [index, tab] of brandTabs.entries()) {
+    tab.addEventListener('click', () => {
+      const brand = tab.dataset.appearanceBrand;
+      const remembered = brandThemes[brand];
+      selectedTheme = cards.some(card => card.dataset.appearanceTheme === remembered && themeBrand(remembered) === brand)
+        ? remembered : brand === 'vc' ? 'vc-classic' : 'classic';
+      save();
+    });
+    tab.addEventListener('keydown', event => {
+      const target = { ArrowLeft: 1 - index, ArrowRight: 1 - index, Home: 0, End: 1 }[event.key];
+      if (target === undefined) return;
+      event.preventDefault();
+      brandTabs[target].focus();
+      brandTabs[target].click();
+    });
   }
 
   for (const radio of radios) {
