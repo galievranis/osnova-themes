@@ -554,7 +554,7 @@
     const whiteWriteButton = /^#[0-9a-f]{6}$/i.test(headerColor)
       && luminance(headerColor) <= 1.05 / 3 - 0.05;
     root.toggleAttribute('data-white-write-button', whiteWriteButton);
-    root.toggleAttribute('data-muted-choice-controls', ['movies', 'kojima', 'music', 'tarantino', 'vc-future', 'vc-transport', 'vc-market', 'vc-money', 'vc-science', 'vc-memes'].includes(selectedTheme));
+    root.toggleAttribute('data-muted-choice-controls', ['movies', 'kojima', 'music', 'paper', 'vc-future', 'vc-transport', 'vc-market', 'vc-money', 'vc-science', 'vc-memes'].includes(selectedTheme));
     const brand = themeBrand(selectedTheme);
     const isVc = brand === 'vc';
     for (const tab of brandTabs) {
