@@ -571,6 +571,9 @@
       }
     }
     const surface = resolveHex(palette, '--theme-color-background-content');
+    if (/^#[0-9a-f]{6}$/i.test(surface)) {
+      palette['--appearance-radio-fill'] = readableColor(surface, surface, 3.1);
+    }
     const nativeScheme = custom ? (luminance(surface) < 0.179 ? 'dark' : 'light') : mode;
     root.dataset.colorMode = custom ? 'light' : mode;
     root.toggleAttribute('data-custom-palette', custom);

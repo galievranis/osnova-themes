@@ -2989,8 +2989,9 @@
       "--theme-color-button-primary": "#2446A3",
       "--theme-color-button-primary-hover": "#214096",
       "--theme-color-button-primary-pressed": "#1F3C8C",
-      "--theme-color-field-background": "#EDEDED",
-      "--theme-color-field-background-hover": "#F4F4F4",
+      "--theme-color-background-content": "#F7FAFF",
+      "--theme-color-field-background": "#E9EFF8",
+      "--theme-color-field-background-hover": "#F0F4FC",
       "--theme-color-field-border-focus": "#2446A3",
       "--theme-color-radio-outline": "#89878B",
       "--theme-color-accent-subtle": "#C2CBE5",
@@ -3021,8 +3022,8 @@
       "--theme-color-button-primary": "#9AAFEE",
       "--theme-color-button-primary-hover": "#A4B7F0",
       "--theme-color-button-primary-pressed": "#ABBDF1",
-      "--theme-color-field-background": "#363A4A",
-      "--theme-color-field-background-hover": "#3F4252",
+      "--theme-color-field-background": "#373E52",
+      "--theme-color-field-background-hover": "#40465A",
       "--theme-color-field-border-focus": "#9AAFEE",
       "--theme-color-radio-outline": "#747682",
       "--theme-color-accent-subtle": "#464F6D",
@@ -3037,7 +3038,7 @@
       "--theme-color-button-transparent-hover": "#2E3348",
       "--theme-color-button-transparent-pressed": "#33394F",
       "--theme-color-round-button-background": "#2F3549",
-      "--theme-color-background-content": "#262A3B"
+      "--theme-color-background-content": "#282F45"
     }
   },
   {

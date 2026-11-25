@@ -197,9 +197,17 @@
   display: none;
 }
 
-.radio:not(.radio--checked) .radio__control {
-  outline: 1px solid var(--theme-color-radio-outline, transparent);
-  outline-offset: -1px;
+[data-appearance] .radio:not(.radio--invalid):not(.radio--disabled) .radio__control {
+  border-color: transparent;
+}
+
+[data-appearance] .radio:not(.radio--checked):not(.radio--invalid):not(.radio--disabled) .radio__control {
+  background-color: var(--appearance-radio-fill, var(--theme-color-check-background));
+}
+
+[data-appearance] .radio__input:focus-visible ~ .radio__control {
+  outline: 2px solid var(--theme-color-accent);
+  outline-offset: 2px;
 }
 
 .radio--checked .radio__control::after {
@@ -573,20 +581,12 @@
   fill: url(#appearance-legends-pattern-gradient);
 }
 
-[data-muted-choice-controls] .radio:not(.radio--checked):not(:hover)
-  .radio__input:not(:disabled) ~ .radio__control,
 [data-muted-choice-controls] .checkbox:not(:hover)
   .checkbox__input:not(:checked):not(:disabled) ~ .checkbox__control {
   background-color: transparent;
   border-color: var(--theme-color-radio-outline);
 }
 
-[data-muted-choice-controls] .radio:not(.radio--checked):not(:hover)
-  .radio__input:not(:disabled):not(:focus-visible) ~ .radio__control {
-  outline-color: transparent;
-}
-
-[data-muted-choice-controls] .radio .radio__input:focus-visible ~ .radio__control,
 [data-muted-choice-controls] .checkbox .checkbox__input:focus-visible ~ .checkbox__control {
   outline: 2px solid var(--theme-color-accent);
   outline-offset: 2px;
