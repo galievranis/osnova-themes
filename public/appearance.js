@@ -554,7 +554,7 @@
     const whiteWriteButton = /^#[0-9a-f]{6}$/i.test(headerColor)
       && luminance(headerColor) <= 1.05 / 3 - 0.05;
     root.toggleAttribute('data-white-write-button', whiteWriteButton);
-    root.toggleAttribute('data-muted-choice-controls', ['movies', 'kojima', 'music', 'paper', 'vc-future', 'vc-transport', 'vc-market', 'vc-money', 'vc-science', 'vc-memes'].includes(selectedTheme));
+    root.toggleAttribute('data-muted-choice-controls', ['movies', 'kojima', 'music', 'paper', 'tarantino', 'vc-future', 'vc-transport', 'vc-market', 'vc-money', 'vc-science', 'vc-memes'].includes(selectedTheme));
     const brand = themeBrand(selectedTheme);
     const isVc = brand === 'vc';
     for (const tab of brandTabs) {
@@ -572,7 +572,8 @@
     }
     const surface = resolveHex(palette, '--theme-color-background-content');
     if (/^#[0-9a-f]{6}$/i.test(surface)) {
-      palette['--appearance-radio-fill'] = readableColor(surface, surface, 3.1);
+      const radioFill = selectedTheme === 'tarantino' && mode === 'light' ? '#9D8E78' : surface;
+      palette['--appearance-radio-fill'] = readableColor(radioFill, surface, 3.1);
     }
     const nativeScheme = custom ? (luminance(surface) < 0.179 ? 'dark' : 'light') : mode;
     root.dataset.colorMode = custom ? 'light' : mode;
