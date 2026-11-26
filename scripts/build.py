@@ -21,9 +21,8 @@ def write_catalog(path, themes):
     path.write_text(json.dumps(themes, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 
-def build_pages(themes, appearance_themes):
+def build_showcase(output, themes, appearance_themes):
     public = root / 'public'
-    output = root / 'dist-pages'
     shutil.rmtree(output, ignore_errors=True)
     output.mkdir()
     page = (public / 'appearance.html').read_text(encoding='utf-8')
@@ -42,39 +41,14 @@ def build_pages(themes, appearance_themes):
     write_catalog(output / 'themes.json', [theme for theme in themes if theme['id'] in theme_ids])
     write_catalog(output / 'appearance-themes.json', appearance_themes)
     relativize_html(output)
-    print('Built the standalone appearance page in dist-pages/')
+    print(f'Built the theme showcase in {output.name}/')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--pages', action='store_true', help='Build only the appearance page for GitHub Pages')
+    parser.add_argument('--pages', action='store_true', help='Write the showcase to dist-pages for GitHub Pages')
     args = parser.parse_args()
     themes = published_themes(root)
     appearance_themes = published_themes(root, 'appearance-themes.json')
-    if args.pages:
-        build_pages(themes, appearance_themes)
-        raise SystemExit(0)
-
-    dist = root / 'dist'
-    shutil.rmtree(dist, ignore_errors=True)
-    shutil.copytree(root / 'public', dist)
-
-    editor = dist / 'editor'
-    editor.mkdir()
-    for name in (
-        'index.html', 'editor.css', 'editor.js', 'schemes.js', 'artwork.js',
-        'floating.js', 'inspector.js', 'changes.html',
-        'changes.css', 'changes.js', 'palette.html', 'palette.css', 'palette.js',
-        'tokens.json', 'primitives.json', 'contrast.json',
-    ):
-        (dist / name).rename(editor / name)
-
-    shutil.copyfile(dist / 'theme-preview.svg', editor / 'theme-preview.svg')
-
-    for name in ('index.html', 'showcase.css', 'showcase.js'):
-        shutil.copyfile(root / 'showcase' / name, dist / name)
-    write_catalog(dist / 'themes.json', themes)
-    write_catalog(dist / 'appearance-themes.json', appearance_themes)
-    relativize_html(dist)
-    relativize_html(editor)
-    print('Built the theme showcase and /editor/ in dist/')
+    output = root / ('dist-pages' if args.pages else 'dist')
+    build_showcase(output, themes, appearance_themes)
