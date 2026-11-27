@@ -1,5 +1,14 @@
 (async () => {
   const components = document.getElementById('appearance-components');
+  const componentsBody = document.getElementById('appearance-components-body');
+  const componentsToggle = components.querySelector('.appearance-components-toggle');
+  componentsToggle.addEventListener('click', () => {
+    const hidden = components.toggleAttribute('data-preview-hidden');
+    componentsBody.inert = hidden;
+    componentsToggle.setAttribute('aria-expanded', String(!hidden));
+    componentsToggle.setAttribute('aria-label', hidden ? 'Показать элементы темы' : 'Скрыть элементы темы');
+  });
+
   const demoCheckbox = components.querySelector('.checkbox__input');
   demoCheckbox.addEventListener('change', () => {
     demoCheckbox.closest('.checkbox').classList.toggle('checkbox--checked', demoCheckbox.checked);

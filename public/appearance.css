@@ -28,10 +28,49 @@
   --island-radius-top: var(--layout-island-border-radius-smooth);
   margin-top: 8px;
   color: var(--theme-color-text-primary);
+  position: relative;
 }
 
 #appearance-components .appearance-components-body {
   gap: 16px;
+}
+
+.appearance-components-toggle {
+  position: absolute;
+  inset-block-start: 12px;
+  inset-inline-end: var(--layout-content-offset-x);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--theme-color-background-content);
+  color: var(--theme-color-text-primary);
+  cursor: pointer;
+}
+
+.appearance-components-toggle:hover {
+  background: var(--theme-color-button-minimal-hover);
+}
+
+#appearance-components[data-preview-hidden] {
+  background-color: transparent;
+}
+
+#appearance-components[data-preview-hidden] .appearance-components-body {
+  visibility: hidden;
+}
+
+.appearance-components-toggle[aria-expanded="false"]::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transform: rotate(-45deg);
 }
 
 .appearance-components-text {
