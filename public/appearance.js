@@ -595,9 +595,13 @@
       root.style.removeProperty('--appearance-custom-image');
     }
     root.toggleAttribute('data-appearance-image', Boolean(useImage && backgroundImage));
-    root.toggleAttribute('data-appearance-pattern', Boolean(pattern));
-    if (pattern) root.style.setProperty('--appearance-pattern-image', `url('./${pattern}')`);
-    else root.style.removeProperty('--appearance-pattern-image');
+    if (pattern) {
+      root.dataset.appearancePattern = selectedTheme;
+      root.style.setProperty('--appearance-pattern-image', `url('./${pattern}')`);
+    } else {
+      delete root.dataset.appearancePattern;
+      root.style.removeProperty('--appearance-pattern-image');
+    }
     root.dataset.theme = ['contrast', 'vc-contrast'].includes(selectedTheme) ? 'contrast' : 'classic';
     themeStyle.textContent = `:root[data-appearance][data-color-mode] { color-scheme: ${nativeScheme};\n${declarations(palette)}\n}`;
 

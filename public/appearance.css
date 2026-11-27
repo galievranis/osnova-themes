@@ -194,6 +194,15 @@
   isolation: isolate;
 }
 
+[data-appearance-pattern="music"] > body {
+  background-image: radial-gradient(ellipse at center, #F8DCC5, var(--theme-color-background) 44%, #CDDDF6 100%);
+  background-attachment: fixed;
+}
+
+[data-appearance-pattern="music"][data-color-mode="dark"] > body {
+  background-image: radial-gradient(ellipse at center, #482D25, var(--theme-color-background) 44%, #182C49 100%);
+}
+
 [data-appearance-pattern] > body::before,
 .appearance-backdrop-pattern {
   mask-image: var(--appearance-pattern-image);
